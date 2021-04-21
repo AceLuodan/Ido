@@ -2,65 +2,79 @@
 
 governance 函数(只允许管理者交互)
 
-1.function setTimeOTffer(uint timeOffer_) public governance
+1.function setTimeOTffer(uint timeOffer_)  
+设置开始IDO时间
 
-2.function setTimeClaim(uint timeClaim_) public governance
+2.function setTimeClaim(uint timeClaim_)  
+设置申领Token时间
 
-3.function setRatio(uint ratio_) public governance
+3.function setRatio(uint ratio_)  
+设置USDT：token比率
 
-4.function setRecipient(address payable recipient_) public governance
+4.function setRecipient(address payable recipient_)  
+设置接收token地址
 
-5.function setQuota(address addr, uint amount_) public governance
+5.function withdrawEth()  
+提取合约ETH
 
-6.function rescueTokens(address _token, address _dst) public governance
+6.function rescueTokens(address _token, address _dst)  
+提取合约token
 
-7.function withdrawToken(address _dst) external governance
+7.function withdrawToken(address _dst)  
+提取合约token(默认token)
 
-8.function withdrawToken() external governance
+8.function withdrawToken()  
+提取合约token(默认到管理者地址)
 
-9.function withdrawEth(address payable _dst) external governance
+9.function withdrawEth(address payable _dst)  
+提取合约ETH
 
-10.function withdrawEth() external governance
+10.function withdrawEth()  
+提取合约ETH(默认到管理者地址)
 
+11.function setQuota(address addr, uint amount_)  
+设置地址投入USDT额度
 
+12.function setQuotas(address[] calldata addrs, uint amount) 
+设置地址投入USDT额度，数组
 
-user 函数
+13.function setQuotas(address[] calldata addrs, uint[] calldata amounts) 
+设置地址投入USDT额度，数组
+
+user 函数(公开)
 
 写函数
-1.function setQuotas(address[] calldata addrs, uint amount) external
 
-2.function setQuotas(address[] calldata addrs, uint[] calldata amounts) external
+1.function offer(uint amount_) 
 
-3.function offer(uint amount_) external
-
-4.function claim() public
+2.function claim() 
 
 读函数
-1.function claimedOf(address add) public
+1.function claimedOf(address add) 
 
-2.function offeredOf(address add) public
+2.function offeredOf(address add) 
 
-3.function quotaOf(address add) public
+3.function quotaOf(address add) 
 
-4.function curreny() public
+4.function curreny() 
 
-5.function token() public
+5.function token() 
 
-6.function governor() public
+6.function governor() 
 
-7.function ratio() public
+7.function ratio() 
 
-8.function timeClaim() public
+8.function timeClaim() 
 
-9.function timeOffer() public
+9.function timeOffer() 
 
-10.function recipient() public
+10.function recipient() 
 
-11.function totalQuota() public
+11.function totalQuota() 
 
-12.function totalOffered() public
+12.function totalOffered() 
 
-13.function totalClaimed() public
+13.function totalClaimed() 
 
 
 
