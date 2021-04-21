@@ -1,63 +1,52 @@
-# Ido
+Rinkeby测试网
 
-governance 函数(只允许管理者交互)
+USDT 合约
+0x6d88d6d36B6B9F2FA216c0dB268bc6f93C6E829e
 
-1.function setTimeOTffer(uint timeOffer_) public governance
+T合约
+0x3cbcb0593b0deb9879350a338b9530781701a992
+10000000000000000000000000000000
 
-2.function setTimeClaim(uint timeClaim_) public governance
+ower地址
+0x66d59cA5721Ce058B706581d983bbD7c5bA366f1
+83f14453333d28879b008258d9a24bf0409fc69699275198845edb2ae0fc00d6
 
-3.function setRatio(uint ratio_) public governance
 
-4.function setRecipient(address payable recipient_) public governance
+测试账户
+0x42D073B89f8854e6A7ce61F1583FA4A28d71BC0d
 
-5.function setQuota(address addr, uint amount_) public governance
-
-6.function rescueTokens(address _token, address _dst) public governance
-
-7.function withdrawToken(address _dst) external governance
-
-8.function withdrawToken() external governance
-
-9.function withdrawEth(address payable _dst) external governance
-
-10.function withdrawEth() external governance
+0x5fA4B253C9f20cccf021BCD8A501De998C0CBa41
 
 
 
-user 函数
+IDO合约
+0xE15828222D443bd1d1b12Ea83d7B5056b1a384Ad
 
-写函数
-1.function setQuotas(address[] calldata addrs, uint amount) external
+address governor_ 管理者地址
 
-2.function setQuotas(address[] calldata addrs, uint[] calldata amounts) external
+address currency_ USTD合约地址
 
-3.function offer(uint amount_) external
+address token_ IDO 代币合约地址
 
-4.function claim() public
+address payable recipient_  收款token_地址
+ 
+uint timeOffer_    ms  开始IDO时间 1618827957
+ 
+uint timeClaim_    ms  开始申领代币时间  1618827657000
 
-读函数
-1.function claimedOf(address add) public
+ratio_ 为整数  10000000000000000000
 
-2.function offeredOf(address add) public
+ratio_  USDT:T = 1：ratio_
 
-3.function quotaOf(address add) public
 
-4.function curreny() public
+1.合约初始化
 
-5.function token() public
+2.发送 T Token  给 IDO合约
 
-6.function governor() public
+3.IDO合约设置额度
 
-7.function ratio() public
+4.用户approve 额度 给IDO合约
 
-8.function timeClaim() public
+5.用户 offer  IDO合约
 
-9.function timeOffer() public
-
-10.function recipient() public
-
-11.function totalQuota() public
-
-12.function totalOffered() public
-
-13.function totalClaimed() public
+5.用户 claim  IDO合约
