@@ -1,7 +1,0 @@
-
-npm i 
-
-npm install --save-dev hardhat @nomiclabs/hardhat-truffle5
-
-npx hardhat run --network rinkeby  deploy/deployOffering.js 
-
