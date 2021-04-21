@@ -837,14 +837,6 @@ contract Offering is  Governable{
             setQuota(addrs[i], amounts[i]);
     }
     
-    // function getCurrencyDec() public view  returns (uint){
-        
-    //   return 10 ** currency.decimals();
-    // }
-    
-    // function getTokenDec() public view  returns (uint){
-    //   return 10 ** token.decimals();
-    // }
     // usdt amount 
 	function offer(uint amount_) external {
 		require(address(currency) != address(0), 'should call offerEth() instead');
@@ -867,25 +859,7 @@ contract Offering is  Governable{
 		emit Offer(msg.sender, amount, volume, totalOffered);
 	}
 	event Offer(address indexed addr, uint amount, uint volume, uint total);
-	
-	// function offerEth() public payable {
-	// 	require(address(currency) == address(0), 'should call offer(uint amount) instead');
-	// 	require(now >= timeOffer, "it's not time yet");
-	// 	require(now < timeClaim, "expired");
-	// 	uint amount = Math.min(msg.value, quotaOf[msg.sender]);
-	// 	require(amount > 0, 'no quota');
-	// 	require(offeredOf[msg.sender] == 0, 'offered already');
 		
-	// 	recipient.transfer(amount);
-	// 	uint volume = amount.mul(ratio).div(1e18);
-	// 	offeredOf[msg.sender] = volume;
-	// 	totalOffered = totalOffered.add(volume);
-	// 	require(totalOffered <= token.balanceOf(address(this)), 'Quota is full');
-	// 	if(msg.value > amount)
-	// 	    msg.sender.transfer(msg.value.sub(amount));
-	// 	emit Offer(msg.sender, amount, volume, totalOffered);
-	// }
-	
 	// token amount
     function claim() public {
         require(now >= timeClaim, "it's not time yet");

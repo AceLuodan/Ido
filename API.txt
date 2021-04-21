@@ -46,35 +46,50 @@ user 函数(公开)
 写函数
 
 1.function offer(uint amount_) 
+用户IDO投入amount_ USDT
 
 2.function claim() 
+用户claim token
 
 读函数
 1.function claimedOf(address add) 
+地址已申领token数量
 
 2.function offeredOf(address add) 
+地址已投入USDT数量
 
 3.function quotaOf(address add) 
+地址限额USDT数量
 
 4.function curreny() 
+usdt地址
 
 5.function token() 
+token地址
 
 6.function governor() 
+管理人地址
 
 7.function ratio() 
+比例
 
 8.function timeClaim() 
+开始Claim时间
 
 9.function timeOffer() 
+开启IDO投放时间
 
 10.function recipient() 
+接受Token地址
 
 11.function totalQuota() 
+总限额USDT数量
 
 12.function totalOffered() 
+总已投入USDT数量
 
 13.function totalClaimed() 
+总已申领Token数量
 
 
 
