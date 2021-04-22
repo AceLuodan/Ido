@@ -29,9 +29,9 @@ address token_  代币合约地址
 
 address payable recipient_  收款USDT地址
  
-uint timeOffer_    ms  开始IDO时间 1618827957
+uint timeOffer_    s  开始IDO时间 1618827957
  
-uint timeClaim_    ms  开始申领代币时间  1618827657000
+uint timeClaim_    s  开始申领代币时间  1618827657000
 
 ratio_ 为整数  10*10**18(10000000000000000000)
 
