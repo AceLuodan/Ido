@@ -1,30 +1,26 @@
-Rinkeby测试网
-
+1.Rinkeby测试网
 https://rinkeby.infura.io/v3/aacefa715bbb4a23b6ad98cf61cec2bc
 
-
-USDT 合约
+2.USDT 合约
 0x6d88d6d36B6B9F2FA216c0dB268bc6f93C6E829e
 
-T合约
+3.T合约
 0x3cbcb0593b0deb9879350a338b9530781701a992
-10000000000000000000000000000000
 
-ower地址
+
+3.ower管理者地址
 0x66d59cA5721Ce058B706581d983bbD7c5bA366f1
 83f14453333d28879b008258d9a24bf0409fc69699275198845edb2ae0fc00d6
 
 
-测试账户
+4.测试账户
 0x42D073B89f8854e6A7ce61F1583FA4A28d71BC0d
 
 0x5fA4B253C9f20cccf021BCD8A501De998C0CBa41
 
-
-
-IDO合约
+5.IDO合约
 0xE15828222D443bd1d1b12Ea83d7B5056b1a384Ad
-
+IDO一些属性说明
 address governor_ 管理者地址
 
 address currency_ USTD合约地址
