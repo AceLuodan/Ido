@@ -1,5 +1,8 @@
 Rinkeby测试网
 
+https://rinkeby.infura.io/v3/aacefa715bbb4a23b6ad98cf61cec2bc
+
+
 USDT 合约
 0x6d88d6d36B6B9F2FA216c0dB268bc6f93C6E829e
 
