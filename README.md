@@ -19,7 +19,7 @@
 0x5fA4B253C9f20cccf021BCD8A501De998C0CBa41
 
 6.IDO合约
-0xE15828222D443bd1d1b12Ea83d7B5056b1a384Ad
+0x209463257da0B24b92e04689d9174127181BBE87
 IDO一些属性说明
 
 address governor_ 管理者地址
@@ -49,7 +49,7 @@ TOKEN(T) :  USDT: = 1：ratio_
 
 2.发送 T Token  给 IDO合约
 
-3.IDO合约设置USDT额度
+3.IDO合约设置用户USDT额度
 
 4.用户approve 额度 给IDO合约
 
