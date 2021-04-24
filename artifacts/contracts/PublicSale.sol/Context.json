@@ -1,0 +1,10 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "Context",
+  "sourceName": "contracts/PublicSale.sol",
+  "abi": [],
+  "bytecode": "0x6080604052348015600f57600080fd5b50603f80601d6000396000f3fe6080604052600080fdfea264697066735822122018e59ecc772a6677a0e8f9b8b0e5d25c1ea7a2fd9df8c346979fbf4b61d4283764736f6c63430006020033",
+  "deployedBytecode": "0x6080604052600080fdfea264697066735822122018e59ecc772a6677a0e8f9b8b0e5d25c1ea7a2fd9df8c346979fbf4b61d4283764736f6c63430006020033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

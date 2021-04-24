@@ -5,3 +5,5 @@ npm install --save-dev hardhat @nomiclabs/hardhat-truffle5 ethers @nomiclabs/har
 
 npx hardhat run --network rinkeby  deploy/deployOffering.js 
 
+npx hardhat run --network rinkeby  deploy/deployPublicSale.js
+

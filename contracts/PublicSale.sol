@@ -851,8 +851,9 @@ contract PublicSale is  Governable{
   
     
     function offer(uint amount) external {
+        require(address(currency) != address(0), 'should call offerEth() instead');
         require(now < timeOffer, 'expired');
-
+        require(amount > 0, 'amount gt 0');
         require(totalPurchasedCurrency.add(amount) <= maxUsdtTotalOffered, 'should gs maxUsdtTotalOffereds');
 
         IERC20(currency).safeTransferFrom(msg.sender, address(this), amount);

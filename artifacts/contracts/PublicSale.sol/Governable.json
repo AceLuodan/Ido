@@ -1,0 +1,76 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "Governable",
+  "sourceName": "contracts/PublicSale.sol",
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "previousGovernor",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "newGovernor",
+          "type": "address"
+        }
+      ],
+      "name": "GovernorshipTransferred",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "governor_",
+          "type": "address"
+        }
+      ],
+      "name": "__Governable_init_unchained",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "governor",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "renounceGovernorship",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newGovernor",
+          "type": "address"
+        }
+      ],
+      "name": "transferGovernorship",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x608060405234801561001057600080fd5b50610328806100206000396000f3fe608060405234801561001057600080fd5b506004361061004c5760003560e01c80630c340a241461005157806381c0c26314610082578063b6aa515b1461008c578063df69e016146100bf575b600080fd5b6100596100f2565b6040805173ffffffffffffffffffffffffffffffffffffffff9092168252519081900360200190f35b61008a61010e565b005b61008a600480360360208110156100a257600080fd5b503573ffffffffffffffffffffffffffffffffffffffff166101a1565b61008a600480360360208110156100d557600080fd5b503573ffffffffffffffffffffffffffffffffffffffff166101d1565b60005473ffffffffffffffffffffffffffffffffffffffff1681565b60005473ffffffffffffffffffffffffffffffffffffffff16331461013257600080fd5b6000805460405173ffffffffffffffffffffffffffffffffffffffff909116907fc7c0c772add429241571afb3805861fb3cfa2af374534088b76cdb4325a87e9a908390a3600080547fffffffffffffffffffffffff0000000000000000000000000000000000000000169055565b60005473ffffffffffffffffffffffffffffffffffffffff1633146101c557600080fd5b6101ce81610245565b50565b600080547fffffffffffffffffffffffff00000000000000000000000000000000000000001673ffffffffffffffffffffffffffffffffffffffff83811691909117808355604051911691907fc7c0c772add429241571afb3805861fb3cfa2af374534088b76cdb4325a87e9a908290a350565b73ffffffffffffffffffffffffffffffffffffffff811661026557600080fd5b6000805460405173ffffffffffffffffffffffffffffffffffffffff808516939216917fc7c0c772add429241571afb3805861fb3cfa2af374534088b76cdb4325a87e9a91a3600080547fffffffffffffffffffffffff00000000000000000000000000000000000000001673ffffffffffffffffffffffffffffffffffffffff9290921691909117905556fea2646970667358221220c740e4486a7a92cae76a86ba31713cab0b7450a57ee6bd98bfca0f37ff0d458b64736f6c63430006020033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b506004361061004c5760003560e01c80630c340a241461005157806381c0c26314610082578063b6aa515b1461008c578063df69e016146100bf575b600080fd5b6100596100f2565b6040805173ffffffffffffffffffffffffffffffffffffffff9092168252519081900360200190f35b61008a61010e565b005b61008a600480360360208110156100a257600080fd5b503573ffffffffffffffffffffffffffffffffffffffff166101a1565b61008a600480360360208110156100d557600080fd5b503573ffffffffffffffffffffffffffffffffffffffff166101d1565b60005473ffffffffffffffffffffffffffffffffffffffff1681565b60005473ffffffffffffffffffffffffffffffffffffffff16331461013257600080fd5b6000805460405173ffffffffffffffffffffffffffffffffffffffff909116907fc7c0c772add429241571afb3805861fb3cfa2af374534088b76cdb4325a87e9a908390a3600080547fffffffffffffffffffffffff0000000000000000000000000000000000000000169055565b60005473ffffffffffffffffffffffffffffffffffffffff1633146101c557600080fd5b6101ce81610245565b50565b600080547fffffffffffffffffffffffff00000000000000000000000000000000000000001673ffffffffffffffffffffffffffffffffffffffff83811691909117808355604051911691907fc7c0c772add429241571afb3805861fb3cfa2af374534088b76cdb4325a87e9a908290a350565b73ffffffffffffffffffffffffffffffffffffffff811661026557600080fd5b6000805460405173ffffffffffffffffffffffffffffffffffffffff808516939216917fc7c0c772add429241571afb3805861fb3cfa2af374534088b76cdb4325a87e9a91a3600080547fffffffffffffffffffffffff00000000000000000000000000000000000000001673ffffffffffffffffffffffffffffffffffffffff9290921691909117905556fea2646970667358221220c740e4486a7a92cae76a86ba31713cab0b7450a57ee6bd98bfca0f37ff0d458b64736f6c63430006020033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}
