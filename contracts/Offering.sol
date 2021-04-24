@@ -776,30 +776,61 @@ contract Offering is  Governable{
 	using SafeMath for uint;
 	using SafeERC20 for IERC20;
 	
+    uint public constant contractType = 1;
 	IERC20 public currency;
 	IERC20 public token;
 	uint public ratio;
+    uint public feeRatio;
 	address payable public recipient;
+    address payable public feeOwner;
 	uint public timeOffer;
 	uint public timeClaim;
 	
-	uint public totalQuota;
+	uint public totalUsdtQuota;
 	uint public totalOffered;
 	uint public totalClaimed;
-	mapping (address => uint) public quotaOf;
+    uint public minUsdtTotalOffered;
+    uint public totalUsdtTotalOffered;
+
+	mapping (address => uint) public quotaUsdtOf;
 	mapping (address => uint) public offeredOf;
+    mapping (address => uint) public offeredUsdtOf;
 	mapping (address => uint) public claimedOf;
 
-	constructor(address governor_,address currency_, address token_, uint ratio_, address payable recipient_, uint timeOffer_, uint timeClaim_) public  {
-		
+    event Offer(address indexed addr, uint amount, uint volume, uint total);
+    event Claim(address indexed addr, uint volume, uint total);
+    event Revert(address indexed addr, uint volume,uint volumeUsdt, uint total);
+    event WithdrawCurrency(address indexed addr, uint balance,uint recipientBalance);
+
+    //  (ratio_  feeRatio_ )  mul 10**18  minUsdtTotalOffered_  mul 10**6
+	constructor(address governor_,address currency_, address token_, uint ratio_, address payable recipient_, address payable feeOwner_,uint feeRatio_,uint timeOffer_, uint timeClaim_,uint minUsdtTotalOffered_) public  {
+	    
+        require(ratio_ > 0,"ratio should gt 0");
         __Governable_init_unchained(governor_);
         currency = IERC20(currency_);
 		token = IERC20(token_);
+
 		ratio = ratio_;
 		recipient = recipient_;
 	    timeOffer = timeOffer_;
 	    timeClaim = timeClaim_;
+        feeRatio = feeRatio_;
+		feeOwner = feeOwner_;
+
+        minUsdtTotalOffered =minUsdtTotalOffered_;
 	}
+
+     function setMinUsdtTotalOffered(uint minUsdtTotalOffered_) public governance {
+        minUsdtTotalOffered =minUsdtTotalOffered_;
+    }
+
+    function setFeeOwner(address payable feeOwner_) public governance {
+        feeOwner = feeOwner_;
+    }
+
+    function setFeeRatio(uint feeRatio_) public governance {
+        feeRatio = feeRatio_;
+    }
 
     function setTimeOTffer(uint timeOffer_) public governance {
         timeOffer = timeOffer_;
@@ -817,13 +848,13 @@ contract Offering is  Governable{
        recipient = recipient_;
     }
 	
-    function setQuota(address addr, uint amount_) public governance {
+    function setQuota(address addr, uint amount) public governance {
 
-        uint amount =amount_.mul(10**currency.decimals());
+        // uint amount =amount_.mul(10**currency.decimals());
 
-        totalQuota = totalQuota.add(amount).sub(quotaOf[addr]);
-        quotaOf[addr] = amount;
-        emit Quota(addr, amount, totalQuota);
+        totalUsdtQuota = totalUsdtQuota.add(amount).sub(quotaUsdtOf[addr]);
+        quotaUsdtOf[addr] = amount;
+        emit Quota(addr, amount, totalUsdtQuota);
     }
     event Quota(address indexed addr, uint amount, uint total);
     
@@ -838,42 +869,61 @@ contract Offering is  Governable{
     }
     
     // usdt amount 
-	function offer(uint amount_) external {
+	function offer(uint amount) external {
 		require(address(currency) != address(0), 'should call offerEth() instead');
 		require(now >= timeOffer, "it's not time yet");
-        require(amount_ > 0, "amount should gt 0");
-        uint amount =amount_.mul(10**currency.decimals());
+        require(amount > 0, "amount should gt 0");
+        
 		require(now < timeClaim, "expired");
-		amount = Math.min(amount, quotaOf[msg.sender]);
+		amount = Math.min(amount, quotaUsdtOf[msg.sender]);
 		require(amount > 0, 'no quota');
 		require(currency.allowance(msg.sender, address(this)) >= amount, 'allowance not enough');
 		require(currency.balanceOf(msg.sender) >= amount, 'balance not enough');
 		require(offeredOf[msg.sender] == 0, 'offered already');
 		
-		currency.safeTransferFrom(msg.sender, recipient, amount);
-
-		uint volume = amount_.mul(ratio).mul(10**token.decimals()).div(1e18);
+		//currency.safeTransferFrom(msg.sender, recipient, amount);
+        currency.safeTransferFrom(msg.sender, address(this), amount);
+        offeredUsdtOf[msg.sender] = amount;
+		uint volume = amount.mul(ratio).mul(10**token.decimals()).div(10**currency.decimals()).div(1e18);
 		offeredOf[msg.sender] = volume;
+
+        totalUsdtTotalOffered = totalUsdtTotalOffered.add(amount);
 		totalOffered = totalOffered.add(volume);
 		require(totalOffered <= token.balanceOf(address(this)), 'Quota is full');
 		emit Offer(msg.sender, amount, volume, totalOffered);
 	}
-	event Offer(address indexed addr, uint amount, uint volume, uint total);
-		
+	
 	// token amount
     function claim() public {
         require(now >= timeClaim, "it's not time yet");
         require(claimedOf[msg.sender] == 0, 'claimed already'); 
+        require(offeredUsdtOf[msg.sender] > 0, 'offered Usdt should gt 0'); 
 		// if(token.balanceOf(address(this)).add(totalClaimed) > totalOffered)
 		// 	token.safeTransfer(recipient, token.balanceOf(address(this)).add(totalClaimed).sub(totalOffered));
-        require(token.balanceOf(address(this))>= totalOffered.sub(totalClaimed)," offered num  need gt balanace!");
-        uint volume = offeredOf[msg.sender];
-        claimedOf[msg.sender] = volume;
-        totalClaimed = totalClaimed.add(volume);
-        token.safeTransfer(msg.sender, volume);
-        emit Claim(msg.sender, volume, totalClaimed);
+       
+        if(minUsdtTotalOffered <= totalUsdtTotalOffered){
+            require(token.balanceOf(address(this))>= totalOffered.sub(totalClaimed)," offered token number should gt balanace!");
+            uint volume = offeredOf[msg.sender];
+            claimedOf[msg.sender] = volume;
+            totalClaimed = totalClaimed.add(volume);
+            token.safeTransfer(msg.sender, volume);
+            emit Claim(msg.sender, volume, totalClaimed);
+        }else{
+            require(currency.balanceOf(address(this))>= totalUsdtTotalOffered," offered Usdt number should gt balanace!");
+            uint volumeUsdt =  offeredUsdtOf[msg.sender];
+            uint volume =  offeredOf[msg.sender];
+           
+            offeredUsdtOf[msg.sender] = 0;
+            offeredOf[msg.sender] =0 ;
+            totalOffered= totalOffered.sub(volume);
+            totalUsdtTotalOffered = totalUsdtTotalOffered.sub(volumeUsdt);
+             //Revert USDT
+            currency.safeTransfer(msg.sender, volumeUsdt);
+            emit Revert(msg.sender,volume, volumeUsdt,totalOffered);
+        }
+       
     }
-    event Claim(address indexed addr, uint volume, uint total);
+
     
     /// @notice This method can be used by the owner to extract mistakenly
     ///  sent tokens to this contract.
@@ -889,6 +939,17 @@ contract Offering is  Governable{
 
     function withdrawToken() external governance {
         rescueTokens(address(token), msg.sender);
+    }
+
+
+    function withdrawCurrencyToken()  external governance{
+
+        uint balance = currency.balanceOf(address(this));
+        uint feeBalance =   balance.mul(feeRatio).div(1e18);
+        uint recipientBalance =  balance.sub(feeBalance);
+        IERC20(currency).safeTransfer(recipient, recipientBalance);
+        IERC20(currency).safeTransfer(feeOwner, feeBalance);
+        emit WithdrawCurrency(recipient,balance, recipientBalance);
     }
     
     function withdrawEth(address payable _dst) external governance {

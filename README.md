@@ -20,7 +20,7 @@ ower地址
 
 
 IDO合约
-0xE15828222D443bd1d1b12Ea83d7B5056b1a384Ad
+0x1b116a9477cf8fc7bcd15676b2e996a3f94c79b9
 
 address governor_ 管理者地址
 
@@ -29,12 +29,18 @@ address currency_ USTD合约地址
 address token_  代币合约地址
 
 address payable recipient_  收款USDT地址
+
+address payable feeOwner_  fee收款USDT地址
+
+feeRatio_ 为整数  收费比例 3% 3*10**18(10000000000000000000)/100 =  30000000000000000
  
-uint timeOffer_    ms  开始IDO时间 1618827957
+uint timeOffer_    s  开始IDO时间 1618827957
  
-uint timeClaim_    ms  开始申领代币时间  1618827657000
+uint timeClaim_    s  开始申领代币时间  1618827657000
 
 ratio_ 为整数  10*10**18(10000000000000000000)
+
+minTotalOffered_ 10 USDT  10*10**6 最低软顶，低于即失败 10000000
 
 TOKEN(T) :  USDT: = 1：ratio_
 
@@ -43,7 +49,7 @@ TOKEN(T) :  USDT: = 1：ratio_
 
 2.发送 T Token  给 IDO合约
 
-3.IDO合约设置额度
+3.IDO合约设置USDT额度
 
 4.用户approve 额度 给IDO合约
 
