@@ -18,8 +18,8 @@
 
 0x5fA4B253C9f20cccf021BCD8A501De998C0CBa41
 
-6.IDO合约
-0x209463257da0B24b92e04689d9174127181BBE87
+6.IDO白名单合约
+0x5f64993F018981979610D4D77dAc93593e95058f
 IDO一些属性说明
 
 address governor_ 管理者地址
@@ -38,11 +38,11 @@ uint timeOffer_    s  开始IDO时间 1618827957
  
 uint timeClaim_    s  开始申领代币时间  1618827657000
 
-ratio_ 为整数  10*10**18(10000000000000000000)
+price_ 为整数  10*10**18(10000000000000000000)
 
 minTotalOffered_ 10 USDT  10*10**6 最低软顶，低于即失败 10000000
 
-TOKEN(T) :  USDT: = 1：ratio_
+TOKEN(T) :  USDT: = 1：price_
 
 
 1.合约初始化

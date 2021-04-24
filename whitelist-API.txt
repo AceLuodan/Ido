@@ -8,37 +8,34 @@ governance 函数(只允许管理者交互)
 2.function setTimeClaim(uint timeClaim_)  
 设置申领Token时间
 
-3.function setRatio(uint ratio_)  
-设置USDT：token比率
-
-4.function setRecipient(address payable recipient_)  
+3.function setRecipient(address payable recipient_)  
 设置接收token地址
 
-5.function withdrawEth()  
+4.function withdrawEth()  
 提取合约ETH
 
-6.function rescueTokens(address _token, address _dst)  
+5.function rescueTokens(address _token, address _dst)  
 提取合约token
 
-7.function withdrawToken(address _dst)  
+6.function withdrawToken(address _dst)  
 提取合约token(默认token)
 
-8.function withdrawToken()  
+7.function withdrawToken()  
 提取合约token(默认到管理者地址)
 
-9.function withdrawEth(address payable _dst)  
+8.function withdrawEth(address payable _dst)  
 提取合约ETH
 
-10.function withdrawEth()  
+9.function withdrawEth()  
 提取合约ETH(默认到管理者地址)
 
-11.function setQuota(address addr, uint amount_)  
+10.function setQuota(address addr, uint amount_)  
 设置地址投入USDT额度
 
-12.function setQuotas(address[] calldata addrs, uint amount) 
+11.function setQuotas(address[] calldata addrs, uint amount) 
 设置地址投入USDT额度，数组
 
-13.function setQuotas(address[] calldata addrs, uint[] calldata amounts) 
+12.function setQuotas(address[] calldata addrs, uint[] calldata amounts) 
 设置地址投入USDT额度，数组
 
 user 函数(公开)
@@ -70,7 +67,7 @@ token地址
 6.function governor() 
 管理人地址
 
-7.function ratio() 
+7.function price() 
 比例
 
 8.function timeClaim() 
