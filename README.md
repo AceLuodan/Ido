@@ -36,9 +36,11 @@ feeRatio_ 为整数  收费比例 3% 3*10**18(10000000000000000000)/100 =  30000
  
 uint timeOffer_    s  开始IDO时间 1618827957
  
-uint timeClaim_    s  开始申领代币时间  1618827657000
+uint timeClaim_    s  开始申领代币时间  1618837657000
 
-price_ 为整数  10*10**18(10000000000000000000)
+// price * 1e18  * 10**curDec / 10 ** tokenDec
+ 
+price_ 为整数  0.1*10**18(10000000000000000000)  1USDT = 10 T
 
 minTotalOffered_ 10 USDT  10*10**6 最低软顶，低于即失败 10000000
 
@@ -62,7 +64,7 @@ TOKEN(T) :  USDT: = 1：price_
 
 
 2.IDO public-Sale合约
-0xCdE08cC41688277b853cb1DF3b0e06e8D000fA84
+0x41265aC38189aC6a1E125D2C55265E03AE5f83a3
 IDO一些属性说明
 
 address governor_ 管理者地址
@@ -81,7 +83,7 @@ uint timeOffer_    s  开始IDO时间 1618827957
  
 uint timeClaim_    s  开始申领代币时间  1618827657000
 
-price_ 为整数  10*10**18(10000000000000000000)
+price_ 为整数  0.1*10**18(10000000000000000000)
 
 minTotalOffered_ 10 USDT  10*10**6 最低软顶，低于即失败 10000000
 
@@ -90,14 +92,12 @@ maxUsdtTotalOffered_  50000000*10**6 硬顶  50000000000000
 TOKEN(T) :  USDT: = 1：price_
 
 
-1.合约初始化
+1.合约初始化(最低额度，price*t 数量)
 
 2.发送 T Token  给 IDO合约
 
-3.IDO合约设置用户USDT额度
+3.用户approve 额度 给IDO合约
 
-4.用户approve 额度 给IDO合约
-
-5.用户 offer  IDO合约
+4.用户 offer  IDO合约
 
 5.用户 claim  IDO合约

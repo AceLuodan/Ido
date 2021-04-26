@@ -727,15 +727,6 @@ contract Governable {
 
     event GovernorshipTransferred(address indexed previousGovernor, address indexed newGovernor);
 
-    /**
-     * @dev Contract initializer.
-     * called once by the factory at time of deployment
-     */
-    function __Governable_init_unchained(address governor_) virtual public  {
-        governor = governor_;
-        emit GovernorshipTransferred(address(0), governor);
-    }
-
     modifier governance() {
         require(msg.sender == governor);
         _;
@@ -806,7 +797,7 @@ contract Offering is  Governable{
 	constructor(address governor_,address currency_, address token_, uint price_, address payable recipient_, address payable feeOwner_,uint feeRatio_,uint timeOffer_, uint timeClaim_,uint minUsdtTotalOffered_) public  {
 	    require(timeClaim_ >= timeOffer_, 'timeClaim_ should >= timeOffer_');
         require(price_ > 0,"price should gt 0");
-        __Governable_init_unchained(governor_);
+        _transferGovernorship(governor_);
         currency = IERC20(currency_);
 		token = IERC20(token_);
 
@@ -884,7 +875,10 @@ contract Offering is  Governable{
 		//currency.safeTransferFrom(msg.sender, recipient, amount);
         currency.safeTransferFrom(msg.sender, address(this), amount);
         offeredUsdtOf[msg.sender] = amount;
-		uint volume = amount.mul(price).mul(10**token.decimals()).div(10**currency.decimals()).div(1e18);
+		// uint volume = amount.div(price).mul(10**token.decimals()).div(10**currency.decimals()).mul(1e18);
+
+       uint volume = amount.div(price).mul(1e18);
+
 		offeredOf[msg.sender] = volume;
 
         totalUsdtTotalOffered = totalUsdtTotalOffered.add(amount);
@@ -947,8 +941,8 @@ contract Offering is  Governable{
         uint balance = currency.balanceOf(address(this));
         uint feeBalance =   balance.mul(feeRatio).div(1e18);
         uint recipientBalance =  balance.sub(feeBalance);
-        IERC20(currency).safeTransfer(recipient, recipientBalance);
-        IERC20(currency).safeTransfer(feeOwner, feeBalance);
+        currency.safeTransfer(recipient, recipientBalance);
+        currency.safeTransfer(feeOwner, feeBalance);
         emit WithdrawCurrency(recipient,balance, recipientBalance);
     }
     

@@ -727,15 +727,6 @@ contract Governable {
 
     event GovernorshipTransferred(address indexed previousGovernor, address indexed newGovernor);
 
-    /**
-     * @dev Contract initializer.
-     * called once by the factory at time of deployment
-     */
-    function __Governable_init_unchained(address governor_) virtual public  {
-        governor = governor_;
-        emit GovernorshipTransferred(address(0), governor);
-    }
-
     modifier governance() {
         require(msg.sender == governor);
         _;
@@ -802,7 +793,7 @@ contract PublicSale is  Governable{
     
         require(maxUsdtTotalOffered_ >= minUsdtTotalOffered_,"max should gt min");
 
-        __Governable_init_unchained(governor_);
+        _transferGovernorship(governor_);
         currency    = currency_;
         underlying  = underlying_;
         price       = price_;
@@ -857,6 +848,10 @@ contract PublicSale is  Governable{
         require(amount > 0, "amount should gt 0");
         
 		require(now < timeClaim, "expired");
+        require(amount > 0, 'no quota');
+		require(IERC20(currency).allowance(msg.sender, address(this)) >= amount, 'allowance not enough');
+		require(IERC20(currency).balanceOf(msg.sender) >= amount, 'balance not enough');
+		require(purchasedCurrencyOf[msg.sender] == 0, 'offered already');
 
         require(totalPurchasedCurrency.add(amount) <= maxUsdtTotalOffered, 'should gs maxUsdtTotalOffereds');
 
@@ -878,6 +873,14 @@ contract PublicSale is  Governable{
         } else {
             uint totalCurrency = currency == address(0) ? address(this).balance : IERC20(currency).balanceOf(address(this));
             uint totalUnderlying = IERC20(underlying).balanceOf(address(this));
+            // uint  currencyDec = IERC20(currency).decimals() ;
+            // uint  underlyingDec= IERC20(underlying).decimals() ;
+            // if(currencyDec<underlyingDec){
+            //     totalCurrency = totalCurrency.mul(10**underlyingDec).div(10**currencyDec);
+            // }else{
+            //     totalUnderlying = totalUnderlying.mul(10**currencyDec).div(10**underlyingDec);
+            // }
+
             if(totalUnderlying.mul(price) < totalCurrency.mul(1e18))
                 rate = totalUnderlying.mul(price).div(totalCurrency);
             else
@@ -958,6 +961,17 @@ contract PublicSale is  Governable{
         uint balance = IERC20(_token).balanceOf(address(this));
         IERC20(_token).safeTransfer(_dst, balance);
     }
+
+    function withdrawCurrencyToken()  external governance{
+        uint balance = IERC20(currency).balanceOf(address(this));
+        uint feeBalance =   balance.mul(feeRatio).div(1e18);
+        uint recipientBalance =  balance.sub(feeBalance);
+        IERC20(currency).safeTransfer(recipient, recipientBalance);
+        IERC20(currency).safeTransfer(feeOwner, feeBalance);
+        emit WithdrawCurrency(recipient,balance, recipientBalance);
+    }
+
+    event WithdrawCurrency(address indexed addr, uint balance,uint recipientBalance);
     
     function withdrawToken(address _dst) external governance {
         rescueTokens(address(underlying), _dst);
