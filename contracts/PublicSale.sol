@@ -852,8 +852,12 @@ contract PublicSale is  Governable{
     
     function offer(uint amount) external {
         require(address(currency) != address(0), 'should call offerEth() instead');
-        require(now < timeOffer, 'expired');
-        require(amount > 0, 'amount gt 0');
+
+       	require(now >= timeOffer, "it's not time yet");
+        require(amount > 0, "amount should gt 0");
+        
+		require(now < timeClaim, "expired");
+
         require(totalPurchasedCurrency.add(amount) <= maxUsdtTotalOffered, 'should gs maxUsdtTotalOffereds');
 
         IERC20(currency).safeTransferFrom(msg.sender, address(this), amount);
@@ -886,30 +890,44 @@ contract PublicSale is  Governable{
     }
     
     function claim() public {
-        require(now >= timeOffer, "It is not timeOffer yet");
-        require(settledUnderlyingOf[msg.sender] == 0 || settledCurrencyOf[msg.sender] == 0 , 'settled already');
-        (bool completed_, uint amount, uint volume, uint rate) = claimable(msg.sender);
-        if(!completed_) {
-            completed = true;
-            settleRate = rate;
-        }
-        
-        settledCurrencyOf[msg.sender] = settledCurrencyOf[msg.sender].add(amount);
-        totalSettledCurrency = totalSettledCurrency.add(amount);
-        if(currency == address(0))
-            msg.sender.transfer(amount);
-        else
-            IERC20(currency).safeTransfer(msg.sender, amount);
+        require(now >= timeClaim, "It is not timeClaim yet");
+        if(totalPurchasedCurrency < minUsdtTotalOffered){
+            // Revert USDT
+            require( purchasedCurrencyOf[msg.sender] > 0 , 'purchased Currency should gt 0');
+            require(IERC20(currency).balanceOf(address(this))>= totalPurchasedCurrency," Purchase Usdt number should gt balanace!");
+            uint volumeUsdt =  purchasedCurrencyOf[msg.sender];           
+            purchasedCurrencyOf[msg.sender] = 0;        
+            totalPurchasedCurrency = totalPurchasedCurrency.sub(volumeUsdt);
+             //Revert USDT
+            IERC20(currency).safeTransfer(msg.sender, volumeUsdt);
+            emit Revert(msg.sender,volumeUsdt,totalPurchasedCurrency);
             
-        require(amount > 0 || now >= timeClaim, 'It is not timeOffer to settle underlying');
-        if(now >= timeClaim) {
-            settledUnderlyingOf[msg.sender] = settledUnderlyingOf[msg.sender].add(volume);
-            totalSettledUnderlying = totalSettledUnderlying.add(volume);
-            IERC20(underlying).safeTransfer(msg.sender, volume);
+        }else{
+            require(settledUnderlyingOf[msg.sender] == 0 || settledCurrencyOf[msg.sender] == 0 , 'settled already');
+            (bool completed_, uint amount, uint volume, uint rate) = claimable(msg.sender);
+            if(!completed_) {
+                completed = true;
+                settleRate = rate;
+            }
+            
+            settledCurrencyOf[msg.sender] = settledCurrencyOf[msg.sender].add(amount);
+            totalSettledCurrency = totalSettledCurrency.add(amount);
+            if(currency == address(0))
+                msg.sender.transfer(amount);
+            else
+                IERC20(currency).safeTransfer(msg.sender, amount);
+                
+            require(amount > 0 || now >= timeClaim, 'It is not timeClaim to settle underlying');
+            if(now >= timeClaim) {
+                settledUnderlyingOf[msg.sender] = settledUnderlyingOf[msg.sender].add(volume);
+                totalSettledUnderlying = totalSettledUnderlying.add(volume);
+                IERC20(underlying).safeTransfer(msg.sender, volume);
+            }
+            emit Claim(msg.sender, amount, volume, rate);
         }
-        emit Claim(msg.sender, amount, volume, rate);
     }
     event Claim(address indexed acct, uint amount, uint volume, uint rate);
+    event Revert(address indexed addr, uint volumeUsdt, uint total);
     
     function withdrawable() public view returns (uint amt, uint vol) {
         if(!completed)
