@@ -1,0 +1,92 @@
+# Ido todo
+
+governance 函数(只允许管理者交互)
+
+1.function setTimeOTffer(uint timeOffer_)  
+设置开始IDO时间
+
+2.function setTimeClaim(uint timeClaim_)  
+设置申领Token时间
+
+3.function setRecipient(address payable recipient_)  
+设置接收token地址
+
+4.function withdrawEth()  
+提取合约ETH
+
+5.function rescueTokens(address _token, address _dst)  
+提取合约token
+
+6.function withdrawToken(address _dst)  
+提取合约token(默认token)
+
+7.function withdrawToken()  
+提取合约token(默认到管理者地址)
+
+8.function withdrawEth(address payable _dst)  
+提取合约ETH
+
+9.function withdrawEth()  
+提取合约ETH(默认到管理者地址)
+
+10.function setQuota(address addr, uint amount_)  
+设置地址投入USDT额度
+
+11.function setQuotas(address[] calldata addrs, uint amount) 
+设置地址投入USDT额度，数组
+
+12.function setQuotas(address[] calldata addrs, uint[] calldata amounts) 
+设置地址投入USDT额度，数组
+
+user 函数(公开)
+
+写函数
+
+1.function offer(uint amount_) 
+用户IDO投入amount_ USDT
+
+2.function claim() 
+用户claim token
+
+读函数
+1.function claimedOf(address add) 
+地址已申领token数量
+
+2.function offeredOf(address add) 
+地址已投入USDT数量
+
+3.function quotaOf(address add) 
+地址限额USDT数量
+
+4.function curreny() 
+usdt地址
+
+5.function token() 
+token地址
+
+6.function governor() 
+管理人地址
+
+7.function price() 
+比例
+
+8.function timeClaim() 
+开始Claim时间
+
+9.function timeOffer() 
+开启IDO投放时间
+
+10.function recipient() 
+接受Token地址
+
+11.function totalQuota() 
+总限额USDT数量
+
+12.function totalOffered() 
+总已投入USDT数量
+
+13.function totalClaimed() 
+总已申领Token数量
+
+
+

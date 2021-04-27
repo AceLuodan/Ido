@@ -19,7 +19,7 @@
 0x5fA4B253C9f20cccf021BCD8A501De998C0CBa41
 
 6.IDO白名单合约
-0x42D073B89f8854e6A7ce61F1583FA4A28d71BC0d
+0xCb294D1F33bcBF0ce47eaf13cB60BA9F52631c18
 IDO一些属性说明
 
 address governor_ 管理者地址
@@ -38,7 +38,7 @@ uint timeOffer_    s  开始IDO时间 1618827957
  
 uint timeClaim_    s  开始申领代币时间  1618837657000
 
-uint price_       (USDT:T) * 1e18  * 10**curDec / 10 ** tokenDec   
+uint price_      (USDT:T) * 1e18  * 10**curDec / 10 ** tokenDec   
  
 price_ 为整数  0.1*10**18(10000000000000000000)  1USDT = 10 T
 
@@ -64,7 +64,7 @@ TOKEN(T) :  USDT: = 1：price_
 
 
 2.IDO public-Sale合约
-0xfecda4fe902700B1169824127C569201a044B9E4
+0x053c9837EA5c35FB6509F4cBf1Df6227904e8047
 IDO一些属性说明
 
 address governor_ 管理者地址
