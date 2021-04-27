@@ -876,7 +876,7 @@ contract Offering is  Governable{
         currency.safeTransferFrom(msg.sender, address(this), amount);
         offeredUsdtOf[msg.sender] = amount;
 		// uint volume = amount.div(price).mul(10**token.decimals()).div(10**currency.decimals()).mul(1e18);
-
+        // price_ : (USDT:T) * 1e18  * 10**curDec / 10 ** tokenDec
        uint volume = amount.div(price).mul(1e18);
 
 		offeredOf[msg.sender] = volume;

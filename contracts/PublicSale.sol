@@ -788,7 +788,7 @@ contract PublicSale is  Governable{
     uint public minUsdtTotalOffered;
     uint public maxUsdtTotalOffered;
 
-   //  (price_  feeRatio_ )  mul 10**18  minUsdtTotalOffered_  mul 10**6
+   //   price_ : (USDT:T) * 1e18  * 10**curDec / 10 ** tokenDec   feeRatio_ :mul 10**18  minUsdtTotalOffered_  mul 10**6
     constructor(address governor_, address currency_, address underlying_, uint price_, uint timeOffer_, uint timeClaim_, address payable recipient_, address payable feeOwner_,uint feeRatio_,uint minUsdtTotalOffered_,uint maxUsdtTotalOffered_) public  {
     
         require(maxUsdtTotalOffered_ >= minUsdtTotalOffered_,"max should gt min");

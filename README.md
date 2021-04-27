@@ -38,7 +38,7 @@ uint timeOffer_    s  开始IDO时间 1618827957
  
 uint timeClaim_    s  开始申领代币时间  1618837657000
 
-// price * 1e18  * 10**curDec / 10 ** tokenDec
+uint price_       (USDT:T) * 1e18  * 10**curDec / 10 ** tokenDec   
  
 price_ 为整数  0.1*10**18(10000000000000000000)  1USDT = 10 T
 
