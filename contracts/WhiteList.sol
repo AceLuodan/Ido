@@ -763,7 +763,7 @@ contract Governable {
 }
 
 
-contract Offering is  Governable{
+contract WhiteList is  Governable{
 	using SafeMath for uint;
 	using SafeERC20 for IERC20;
 	
