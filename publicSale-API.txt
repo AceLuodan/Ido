@@ -29,34 +29,53 @@ governance 函数(只允许管理者交互)
 9.function withdrawEth()  
 提取合约ETH(默认到管理者地址)
 
-10.function setQuota(address addr, uint amount_)  
-设置地址投入USDT额度
+10.function renounceGovernorship()  
+删除管理者地址
 
-11.function setQuotas(address[] calldata addrs, uint amount) 
-设置地址投入USDT额度，数组
+11.function setFeeOwner(address feeOwner_) 
+设置手续费接收地址
 
-12.function setQuotas(address[] calldata addrs, uint[] calldata amounts) 
-设置地址投入USDT额度，数组
+12.function setFeeRatio(uint feeRatio_) 
+设置手续费百分比(eg 0.03 *10**18 )
+
+13.function setMaxUsdtTotalOffered(uint maxUsdtTotalOffered_)
+设置总IDO USDT最高限额
+
+14.function setMinUsdtTotalOffered(uint minUsdtTotalOffered_)
+设置总IDO USDT最低限额
+
+15.function transferGovernorship(address newGovernor) 
+转移管理者权限
+
+16.function withdraw(address payable to, uint amount, uint volume)
+管理者提现token和USDT
+
+
+
+
 
 user 函数(公开)
 
 写函数
 
 1.function offer(uint amount_) 
-用户IDO投入amount_ USDT
+用户IDO投入amount_ USDT()
 
 2.function claim() 
-用户claim token
+用户claim token(不满足最低USDT额度，退USDT)
+
+
+
 
 读函数
-1.function claimedOf(address add) 
+1.function settledCurrencyOf(address add) 
 地址已申领token数量
 
-2.function offeredOf(address add) 
-地址已投入USDT数量
+2.function settledCurrencyOf(address add) 
+地址已申领USDT数量
 
-3.function quotaOf(address add) 
-地址限额USDT数量
+3.function purchasedCurrencyOf(address add) 
+地址已投入USDT数量
 
 4.function curreny() 
 usdt地址
@@ -79,14 +98,26 @@ token地址
 10.function recipient() 
 接受Token地址
 
-11.function totalQuota() 
-总限额USDT数量
+11.function totalPurchasedCurrency() 
+总投入USDT
 
-12.function totalOffered() 
-总已投入USDT数量
-
-13.function totalClaimed() 
+12.function totalSettledUnderlying() 
 总已申领Token数量
 
+13.function totalSettledCurrency() 
+总已申领USDT数量
 
+14.function withdrawable() 
+查看当前IDO合约token和USDT金额
 
+15.function claimable() 
+当前用户查看当前IDO合约可申领Token金额和USDT金额
+
+16.function totalClaimable() 
+查看当前IDO合约总可申领Token金额和USDT金额
+
+17.function settleRate()
+根据每USDT占比 可兑换Token比例
+
+18.function contractType()
+合约类型 1:白名单 2：publicSale

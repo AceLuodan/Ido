@@ -64,7 +64,7 @@ TOKEN(T) :  USDT: = 1：price_
 
 
 2.IDO public-Sale合约
-0x053c9837EA5c35FB6509F4cBf1Df6227904e8047
+0x8c8e6C18B075eBCb575e73814d97dd7AcEC8886F
 IDO一些属性说明
 
 address governor_ 管理者地址

@@ -767,7 +767,7 @@ contract PublicSale is  Governable{
 
     using SafeMath for uint;
     using SafeERC20 for IERC20;
-    
+    uint public constant contractType = 2;
     address public currency;
     address public underlying;
     uint public price;

@@ -38,6 +38,23 @@ governance 函数(只允许管理者交互)
 12.function setQuotas(address[] calldata addrs, uint[] calldata amounts) 
 设置地址投入USDT额度，数组
 
+13.function renounceGovernorship()  
+删除管理者地址
+
+14.function setFeeOwner(address feeOwner_) 
+设置手续费接收地址
+
+15.function setFeeRatio(uint feeRatio_) 
+设置手续费百分比(eg 0.03 *10**18 )
+
+16.function setMinUsdtTotalOffered(uint minUsdtTotalOffered_)
+设置总IDO USDT最低限额
+
+17.function transferGovernorship(address newGovernor) 
+转移管理者权限
+
+
+
 user 函数(公开)
 
 写函数
@@ -68,7 +85,7 @@ token地址
 管理人地址
 
 7.function price() 
-比例
+比例((USDT:T) * 1e18  * 10**curDec / 10 ** tokenDec)
 
 8.function timeClaim() 
 开始Claim时间
@@ -87,6 +104,9 @@ token地址
 
 13.function totalClaimed() 
 总已申领Token数量
+
+14.function contractType()
+合约类型 1:白名单 2：publicSale
 
 
 
