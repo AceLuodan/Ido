@@ -19,7 +19,7 @@
 0x5fA4B253C9f20cccf021BCD8A501De998C0CBa41
 
 6.IDO白名单合约
-0xCb294D1F33bcBF0ce47eaf13cB60BA9F52631c18
+0xA300555530b1a9bd976cD53690237c141B05dFBc
 IDO一些属性说明
 
 address governor_ 管理者地址
@@ -42,10 +42,11 @@ uint price_      (USDT:T) * 1e18  * 10**curDec / 10 ** tokenDec
  
 price_ 为整数  0.1*10**18(10000000000000000000)  1USDT = 10 T
 
-minTotalOffered_ 10 USDT  10*10**6 最低软顶，低于即失败 10000000
+minUsdtTotalOffered_ 10 USDT  10*10**6 最低软顶，低于即失败 10000000
 
 TOKEN(T) :  USDT: = 1：price_
 
+minUsdtPersonOffered_ 1USDT（1*10**6 ）  个人最低USDT额度
 
 1.合约初始化
 
@@ -64,7 +65,7 @@ TOKEN(T) :  USDT: = 1：price_
 
 
 2.IDO public-Sale合约
-0x8c8e6C18B075eBCb575e73814d97dd7AcEC8886F
+0x504A34E0680815905Ba24b667e31c5effFcC2CF7
 IDO一些属性说明
 
 address governor_ 管理者地址
@@ -85,9 +86,13 @@ uint timeClaim_    s  开始申领代币时间  1618827657000
 
 price_ 为整数  0.1*10**18(10000000000000000000)
 
-minTotalOffered_ 10 USDT  10*10**6 最低软顶，低于即失败 10000000
+minUsdtTotalOffered_ 10 USDT  10*10**6 最低软顶，低于即失败 10000000
 
-maxUsdtTotalOffered_  50000000*10**6 硬顶  50000000000000
+maxUsdtTotalOffered_  50000000 USDT 50000000*10**6 硬顶  50000000000000
+
+minUsdtPersonOffered_ 1USDT（1*10**6 ）  个人最低USDT额度
+ 
+maxUsdtPersonOffered_ 1000USDT（1000*10**6 ） 个人最高USDT额度
 
 TOKEN(T) :  USDT: = 1：price_
 

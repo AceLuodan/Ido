@@ -788,8 +788,11 @@ contract PublicSale is  Governable{
     uint public minUsdtTotalOffered;
     uint public maxUsdtTotalOffered;
 
+    uint public minUsdtPersonOffered;
+    uint public maxUsdtPersonOffered;
+
    //   price_ : (USDT:T) * 1e18  * 10**curDec / 10 ** tokenDec   feeRatio_ :mul 10**18  minUsdtTotalOffered_  mul 10**6
-    constructor(address governor_, address currency_, address underlying_, uint price_, uint timeOffer_, uint timeClaim_, address payable recipient_, address payable feeOwner_,uint feeRatio_,uint minUsdtTotalOffered_,uint maxUsdtTotalOffered_) public  {
+    constructor(address governor_, address currency_, address underlying_, uint price_, uint timeOffer_, uint timeClaim_, address payable recipient_, address payable feeOwner_,uint feeRatio_,uint minUsdtTotalOffered_,uint maxUsdtTotalOffered_,uint minUsdtPersonOffered_,uint maxUsdtPersonOffered_) public  {
     
         require(maxUsdtTotalOffered_ >= minUsdtTotalOffered_,"max should gt min");
 
@@ -807,6 +810,11 @@ contract PublicSale is  Governable{
 
         minUsdtTotalOffered =minUsdtTotalOffered_;
         maxUsdtTotalOffered =maxUsdtTotalOffered_;
+
+        require(maxUsdtPersonOffered_ >= minUsdtPersonOffered_,"max should gt min!");
+//minUsdtPersonOffered_,uint maxUsdtPersonOffered_
+        minUsdtPersonOffered =minUsdtPersonOffered_;
+        maxUsdtPersonOffered =maxUsdtPersonOffered_;
     }
 
     	
@@ -840,13 +848,13 @@ contract PublicSale is  Governable{
        recipient = recipient_;
     }
   
-    
     function offer(uint amount) external {
         require(address(currency) != address(0), 'should call offerEth() instead');
 
        	require(now >= timeOffer, "it's not time yet");
-        require(amount > 0, "amount should gt 0");
-        
+        //require(amount > 0, "amount should gt 0");
+        require(amount <= maxUsdtPersonOffered, "amount should gt maxUsdtPersonOffered");
+        require(amount >= minUsdtPersonOffered, "amount should st minUsdtPersonOffered");
 		require(now < timeClaim, "expired");
         require(amount > 0, 'no quota');
 		require(IERC20(currency).allowance(msg.sender, address(this)) >= amount, 'allowance not enough');

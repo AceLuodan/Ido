@@ -55,6 +55,16 @@
 				"internalType": "uint256",
 				"name": "maxUsdtTotalOffered_",
 				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "minUsdtPersonOffered_",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "maxUsdtPersonOffered_",
+				"type": "uint256"
 			}
 		],
 		"stateMutability": "nonpayable",
@@ -270,6 +280,19 @@
 	},
 	{
 		"inputs": [],
+		"name": "contractType",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
 		"name": "currency",
 		"outputs": [
 			{
@@ -322,7 +345,33 @@
 	},
 	{
 		"inputs": [],
+		"name": "maxUsdtPersonOffered",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
 		"name": "maxUsdtTotalOffered",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "minUsdtPersonOffered",
 		"outputs": [
 			{
 				"internalType": "uint256",

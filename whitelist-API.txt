@@ -53,6 +53,15 @@ governance 函数(只允许管理者交互)
 17.function transferGovernorship(address newGovernor) 
 转移管理者权限
 
+18.function setMinUsdtPersonOffered(address addr, uint amount_)  
+设置地址最低USDT额度
+
+19.function setMinUsdtPersonOffereds(address[] calldata addrs, uint amount) 
+设置地址最低USDT额度，数组
+
+20.function setMinUsdtPersonOffereds(address[] calldata addrs, uint[] calldata amounts) 
+设置地址最低USDT额度，数组
+
 
 
 user 函数(公开)
@@ -108,5 +117,6 @@ token地址
 14.function contractType()
 合约类型 1:白名单 2：publicSale
 
-
+15.function getMinUsdtPersonOf(address add)
+获取个人最低USDT额度
 

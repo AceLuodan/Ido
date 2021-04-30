@@ -783,6 +783,9 @@ contract WhiteList is  Governable{
     uint public minUsdtTotalOffered;
     uint public totalUsdtTotalOffered;
 
+    uint public minUsdtPersonOffered;
+    mapping (address => uint) public minUsdtPersonOf;
+
 	mapping (address => uint) public quotaUsdtOf;
 	mapping (address => uint) public offeredOf;
     mapping (address => uint) public offeredUsdtOf;
@@ -794,7 +797,7 @@ contract WhiteList is  Governable{
     event WithdrawCurrency(address indexed addr, uint balance,uint recipientBalance);
 
     //  (price_  feeRatio_ )  mul 10**18  minUsdtTotalOffered_  mul 10**6
-	constructor(address governor_,address currency_, address token_, uint price_, address payable recipient_, address payable feeOwner_,uint feeRatio_,uint timeOffer_, uint timeClaim_,uint minUsdtTotalOffered_) public  {
+	constructor(address governor_,address currency_, address token_, uint price_, address payable recipient_, address payable feeOwner_,uint feeRatio_,uint timeOffer_, uint timeClaim_,uint minUsdtTotalOffered_,uint minUsdtPersonOffered_) public  {
 	    require(timeClaim_ >= timeOffer_, 'timeClaim_ should >= timeOffer_');
         require(price_ > 0,"price should gt 0");
         _transferGovernorship(governor_);
@@ -809,6 +812,7 @@ contract WhiteList is  Governable{
 		feeOwner = feeOwner_;
 
         minUsdtTotalOffered =minUsdtTotalOffered_;
+        minUsdtPersonOffered =minUsdtPersonOffered_;
 	}
 
      function setMinUsdtTotalOffered(uint minUsdtTotalOffered_) public governance {
@@ -842,7 +846,7 @@ contract WhiteList is  Governable{
     function setQuota(address addr, uint amount) public governance {
 
         // uint amount =amount_.mul(10**currency.decimals());
-
+        require(amount>= getMinUsdtPersonOf( addr),"Quota should gt min");
         totalUsdtQuota = totalUsdtQuota.add(amount).sub(quotaUsdtOf[addr]);
         quotaUsdtOf[addr] = amount;
         emit Quota(addr, amount, totalUsdtQuota);
@@ -858,12 +862,42 @@ contract WhiteList is  Governable{
         for(uint i=0; i<addrs.length; i++)
             setQuota(addrs[i], amounts[i]);
     }
+
+    function setMinUsdtPersonOffered(address addr, uint amount) public governance {
+        minUsdtPersonOf[addr] = amount;
+        emit MinUsdtPersonOffered(addr, amount);
+    }
+    event MinUsdtPersonOffered(address indexed addr, uint amount);
+    
+    function setMinUsdtPersonOffereds(address[] calldata addrs, uint amount) external {
+        for(uint i=0; i<addrs.length; i++)
+            setMinUsdtPersonOffered(addrs[i], amount);
+    }
+    
+    function setMinUsdtPersonOffereds(address[] calldata addrs, uint[] calldata amounts) external {
+        for(uint i=0; i<addrs.length; i++)
+            setMinUsdtPersonOffered(addrs[i], amounts[i]);
+    }
+
+    function getMinUsdtPersonOf(address addr) public view  returns (uint amount){
+      
+      uint min = minUsdtPersonOf[addr];
+      if(min>0){
+        return min;
+      }
+      
+      return minUsdtPersonOffered;
+
+    }
+
+
     
     // usdt amount 
 	function offer(uint amount) external {
 		require(address(currency) != address(0), 'should call offerEth() instead');
 		require(now >= timeOffer, "it's not time yet");
-        require(amount > 0, "amount should gt 0");
+
+        require(amount > getMinUsdtPersonOf(msg.sender), "amount should gt MinUsdtPersonOf");
         
 		require(now < timeClaim, "expired");
 		amount = Math.min(amount, quotaUsdtOf[msg.sender]);

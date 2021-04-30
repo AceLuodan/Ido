@@ -121,3 +121,9 @@ token地址
 
 18.function contractType()
 合约类型 1:白名单 2：publicSale
+
+19.function minUsdtPersonOffered()
+个人最低USDT额度
+
+19.function maxUsdtPersonOffered()
+个人最高USDT额度
