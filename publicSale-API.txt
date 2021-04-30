@@ -112,9 +112,16 @@ token地址
 
 15.function claimable() 
 当前用户查看当前IDO合约可申领Token金额和USDT金额
+多参数返回(bool completed_, uint amount, uint volume, uint rate)
+completed_:是否可申领
+amount：可申领USDT数
+volume：可申领Token数
+rate：可兑换占比(已乘10**18)
 
 16.function totalClaimable() 
 查看当前IDO合约总可申领Token金额和USDT金额
+多参数返回(bool completed_, uint amount, uint volume, uint rate)
+同上
 
 17.function settleRate()
 根据每USDT占比 可兑换Token比例
