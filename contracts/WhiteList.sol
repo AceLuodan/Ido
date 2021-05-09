@@ -30,7 +30,7 @@ contract Context {
         return msg.data;
     }
 
-    uint256[50] private __gap;
+    // uint256[50] private __gap;
 }
 
 /**
@@ -647,7 +647,7 @@ contract ERC20Safe is Context, IERC20 {
      */
     function _beforeTokenTransfer(address from, address to, uint256 amount) internal virtual { }
 
-    uint256[44] private __gap;
+    // uint256[44] private __gap;
 }
 
 
@@ -800,6 +800,13 @@ contract WhiteList is  Governable{
 	constructor(address governor_,address currency_, address token_, uint price_, address payable recipient_, address payable feeOwner_,uint feeRatio_,uint timeOffer_, uint timeClaim_,uint minUsdtTotalOffered_,uint minUsdtPersonOffered_) public  {
 	    require(timeClaim_ >= timeOffer_, 'timeClaim_ should >= timeOffer_');
         require(price_ > 0,"price should gt 0");
+
+        require(governor_ != address(0), "governor_ zero address");
+        require(currency_ != address(0), "currency_ zero address");
+        require(token_ != address(0), "token_ zero address");
+        require(feeOwner_ != address(0), "feeOwner_ zero address");
+        require(recipient_ != address(0), "recipient_ zero address");
+
         _transferGovernorship(governor_);
         currency = IERC20(currency_);
 		token = IERC20(token_);
@@ -815,32 +822,51 @@ contract WhiteList is  Governable{
         minUsdtPersonOffered =minUsdtPersonOffered_;
 	}
 
+        event SetMinUsdtTotalOffered(address indexed acct, uint amount);
      function setMinUsdtTotalOffered(uint minUsdtTotalOffered_) public governance {
-        minUsdtTotalOffered =minUsdtTotalOffered_;
+         require(minUsdtTotalOffered_ > 0,"minUsdtTotalOffered_ should gt 0");
+         minUsdtTotalOffered =minUsdtTotalOffered_;
+         emit SetMinUsdtTotalOffered(msg.sender, minUsdtTotalOffered_);
     }
 
+    event SetFeeOwner(address indexed acct, address add);
     function setFeeOwner(address payable feeOwner_) public governance {
+        require(feeOwner_ != address(0), "feeOwner_ zero address");
         feeOwner = feeOwner_;
+
+        emit SetFeeOwner(msg.sender, feeOwner_);
     }
 
+    event SetFeeRatio(address indexed acct, uint amount);
     function setFeeRatio(uint feeRatio_) public governance {
         feeRatio = feeRatio_;
+
+        emit SetFeeRatio(msg.sender, feeRatio_);
     }
 
+    event SetTimeOffer(address indexed acct, uint amount);
     function setTimeOffer(uint timeOffer_) public governance {
+        require(timeClaim >= timeOffer_, 'timeClaim_ should >= timeOffer_');
         timeOffer = timeOffer_;
+        emit SetTimeOffer(msg.sender, timeOffer_);
     }
 
+    event SetTimeClaim(address indexed acct, uint amount);
     function setTimeClaim(uint timeClaim_) public governance {
-       timeClaim = timeClaim_;
+        require(timeClaim_ >= timeOffer, 'timeClaim_ should >= timeOffer_');
+        timeClaim = timeClaim_;
+        emit SetTimeClaim(msg.sender, timeClaim_);
     }
 
     // function setPrice(uint price_) public governance {
     //    price = price_;
     // }
 
+    event SetRecipient(address indexed acct, address add);
     function setRecipient(address payable recipient_) public governance {
-       recipient = recipient_;
+        require(recipient_ != address(0), "recipient_ zero address");
+        recipient = recipient_;
+        emit SetRecipient(msg.sender, recipient_);
     }
 	
     function setQuota(address addr, uint amount) public governance {
@@ -859,6 +885,7 @@ contract WhiteList is  Governable{
     }
     
     function setQuotas(address[] calldata addrs, uint[] calldata amounts) external {
+        require(addrs.length == amounts.length);
         for(uint i=0; i<addrs.length; i++)
             setQuota(addrs[i], amounts[i]);
     }
@@ -875,6 +902,7 @@ contract WhiteList is  Governable{
     }
     
     function setMinUsdtPersonOffereds(address[] calldata addrs, uint[] calldata amounts) external {
+        require(addrs.length == amounts.length);
         for(uint i=0; i<addrs.length; i++)
             setMinUsdtPersonOffered(addrs[i], amounts[i]);
     }
@@ -907,37 +935,38 @@ contract WhiteList is  Governable{
 		require(offeredOf[msg.sender] == 0, 'offered already');
 		
 		//currency.safeTransferFrom(msg.sender, recipient, amount);
-        currency.safeTransferFrom(msg.sender, address(this), amount);
+        // currency.safeTransferFrom(msg.sender, address(this), amount);
         offeredUsdtOf[msg.sender] = amount;
 		// uint volume = amount.div(price).mul(10**token.decimals()).div(10**currency.decimals()).mul(1e18);
         // price_ : (USDT:T) * 1e18  * 10**curDec / 10 ** tokenDec
-       uint volume = amount.div(price).mul(1e18);
-
+        //uint volume = amount.div(price).mul(1e18);
+        uint volume = amount.mul(1e18).div(price);
 		offeredOf[msg.sender] = volume;
 
         totalUsdtTotalOffered = totalUsdtTotalOffered.add(amount);
 		totalOffered = totalOffered.add(volume);
 		require(totalOffered <= token.balanceOf(address(this)), 'Quota is full');
+        currency.safeTransferFrom(msg.sender, address(this), amount);
 		emit Offer(msg.sender, amount, volume, totalOffered);
 	}
 	
 	// token amount
     function claim() public {
-        require(now >= timeClaim, "it's not time yet");
+        require(now >= timeClaim, "it's not timeClaim yet");
         require(claimedOf[msg.sender] == 0, 'claimed already'); 
         require(offeredUsdtOf[msg.sender] > 0, 'offered Usdt should gt 0'); 
 		// if(token.balanceOf(address(this)).add(totalClaimed) > totalOffered)
 		// 	token.safeTransfer(recipient, token.balanceOf(address(this)).add(totalClaimed).sub(totalOffered));
        
         if(minUsdtTotalOffered <= totalUsdtTotalOffered){
-            require(token.balanceOf(address(this))>= totalOffered.sub(totalClaimed)," offered token number should gt balanace!");
+            require(token.balanceOf(address(this))>= totalOffered.sub(totalClaimed)," offered token number should not gt balanace!");
             uint volume = offeredOf[msg.sender];
             claimedOf[msg.sender] = volume;
             totalClaimed = totalClaimed.add(volume);
             token.safeTransfer(msg.sender, volume);
             emit Claim(msg.sender, volume, totalClaimed);
         }else{
-            require(currency.balanceOf(address(this))>= totalUsdtTotalOffered," offered Usdt number should gt balanace!");
+            require(currency.balanceOf(address(this))>= totalUsdtTotalOffered," offered Usdt number should not gt balanace!");
             uint volumeUsdt =  offeredUsdtOf[msg.sender];
             uint volume =  offeredOf[msg.sender];
            
@@ -971,7 +1000,8 @@ contract WhiteList is  Governable{
 
 
     function withdrawCurrencyToken()  external governance{
-
+        require(now >= timeClaim, "It is not timeClaim yet");
+        require(totalUsdtTotalOffered >= minUsdtTotalOffered);
         uint balance = currency.balanceOf(address(this));
         uint feeBalance =   balance.mul(feeRatio).div(1e18);
         uint recipientBalance =  balance.sub(feeBalance);

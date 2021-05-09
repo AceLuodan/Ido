@@ -30,7 +30,7 @@ contract Context {
         return msg.data;
     }
 
-    uint256[50] private __gap;
+    //uint256[50] private __gap;
 }
 
 /**
@@ -795,7 +795,11 @@ contract PublicSale is  Governable{
     constructor(address governor_, address currency_, address underlying_, uint price_, uint timeOffer_, uint timeClaim_, address payable recipient_, address payable feeOwner_,uint feeRatio_,uint minUsdtTotalOffered_,uint maxUsdtTotalOffered_,uint minUsdtPersonOffered_,uint maxUsdtPersonOffered_) public  {
     
         require(maxUsdtTotalOffered_ >= minUsdtTotalOffered_,"max should gt min");
-
+        require(governor_ != address(0), "governor_ zero address");
+        require(currency_ != address(0), "currency_ zero address");
+        require(underlying_ != address(0), "underlying_ zero address");
+        require(feeOwner_ != address(0), "feeOwner_ zero address");
+        require(recipient_ != address(0), "recipient_ zero address");
         _transferGovernorship(governor_);
         currency    = currency_;
         underlying  = underlying_;
@@ -817,35 +821,57 @@ contract PublicSale is  Governable{
         maxUsdtPersonOffered =maxUsdtPersonOffered_;
     }
 
-    	
+    event SetMaxUsdtTotalOffered(address indexed acct, uint amount);
      function setMaxUsdtTotalOffered(uint maxUsdtTotalOffered_) public governance {
          require(maxUsdtTotalOffered_ >= minUsdtTotalOffered,"max should gt min");
          maxUsdtTotalOffered =maxUsdtTotalOffered_;
+         emit SetMaxUsdtTotalOffered(msg.sender, maxUsdtTotalOffered_);
     }
 
+    event SetMinUsdtTotalOffered(address indexed acct, uint amount);
      function setMinUsdtTotalOffered(uint minUsdtTotalOffered_) public governance {
          require(maxUsdtTotalOffered >= minUsdtTotalOffered_,"max should gt min");
-        minUsdtTotalOffered =minUsdtTotalOffered_;
+         minUsdtTotalOffered =minUsdtTotalOffered_;
+         emit SetMinUsdtTotalOffered(msg.sender, minUsdtTotalOffered_);
     }
 
+
+    event SetFeeOwner(address indexed acct, address add);
     function setFeeOwner(address payable feeOwner_) public governance {
+        require(feeOwner_ != address(0), "feeOwner_ zero address");
         feeOwner = feeOwner_;
+
+        emit SetFeeOwner(msg.sender, feeOwner_);
     }
 
+
+    event SetFeeRatio(address indexed acct, uint amount);
     function setFeeRatio(uint feeRatio_) public governance {
         feeRatio = feeRatio_;
+
+        emit SetFeeRatio(msg.sender, feeRatio_);
     }
 
+
+    event SetTimeOffer(address indexed acct, uint amount);
     function setTimeOffer(uint timeOffer_) public governance {
+        require(timeClaim >= timeOffer_, 'timeClaim_ should >= timeOffer_');
         timeOffer = timeOffer_;
+        emit SetTimeOffer(msg.sender, timeOffer_);
     }
 
+    event SetTimeClaim(address indexed acct, uint amount);
     function setTimeClaim(uint timeClaim_) public governance {
-       timeClaim = timeClaim_;
+        require(timeClaim_ >= timeOffer, 'timeClaim_ should >= timeOffer_');
+        timeClaim = timeClaim_;
+        emit SetTimeClaim(msg.sender, timeClaim_);
     }
 
+    event SetRecipient(address indexed acct, address add);
     function setRecipient(address payable recipient_) public governance {
-       recipient = recipient_;
+        require(recipient_ != address(0), "recipient_ zero address");
+        recipient = recipient_;
+        emit SetRecipient(msg.sender, recipient_);
     }
   
     function offer(uint amount) external {
@@ -853,19 +879,20 @@ contract PublicSale is  Governable{
 
        	require(now >= timeOffer, "it's not time yet");
         //require(amount > 0, "amount should gt 0");
-        require(amount <= maxUsdtPersonOffered, "amount should gt maxUsdtPersonOffered");
-        require(amount >= minUsdtPersonOffered, "amount should st minUsdtPersonOffered");
+        require(amount <= maxUsdtPersonOffered, "amount should lt maxUsdtPersonOffered");
+        require(amount >= minUsdtPersonOffered, "amount should gt minUsdtPersonOffered");
 		require(now < timeClaim, "expired");
         require(amount > 0, 'no quota');
 		require(IERC20(currency).allowance(msg.sender, address(this)) >= amount, 'allowance not enough');
 		require(IERC20(currency).balanceOf(msg.sender) >= amount, 'balance not enough');
 		require(purchasedCurrencyOf[msg.sender] == 0, 'offered already');
 
-        require(totalPurchasedCurrency.add(amount) <= maxUsdtTotalOffered, 'should gs maxUsdtTotalOffereds');
+        require(totalPurchasedCurrency.add(amount) <= maxUsdtTotalOffered, 'totalPurchasedCurrency should not gt maxUsdtTotalOffereds');
 
-        IERC20(currency).safeTransferFrom(msg.sender, address(this), amount);
+        // IERC20(currency).safeTransferFrom(msg.sender, address(this), amount);
         purchasedCurrencyOf[msg.sender] = purchasedCurrencyOf[msg.sender].add(amount);
         totalPurchasedCurrency = totalPurchasedCurrency.add(amount);
+        IERC20(currency).safeTransferFrom(msg.sender, address(this), amount);
         emit Offer(msg.sender, amount, totalPurchasedCurrency);
     }
     event Offer(address indexed acct, uint amount, uint totalCurrency);
@@ -905,7 +932,7 @@ contract PublicSale is  Governable{
         if(totalPurchasedCurrency < minUsdtTotalOffered){
             // Revert USDT
             require( purchasedCurrencyOf[msg.sender] > 0 , 'purchased Currency should gt 0');
-            require(IERC20(currency).balanceOf(address(this))>= totalPurchasedCurrency," Purchase Usdt number should gt balanace!");
+            require(IERC20(currency).balanceOf(address(this))>= totalPurchasedCurrency," Purchase Usdt number should not gt balanace!");
             uint volumeUsdt =  purchasedCurrencyOf[msg.sender];           
             purchasedCurrencyOf[msg.sender] = 0;        
             totalPurchasedCurrency = totalPurchasedCurrency.sub(volumeUsdt);
@@ -928,7 +955,8 @@ contract PublicSale is  Governable{
             else
                 IERC20(currency).safeTransfer(msg.sender, amount);
                 
-            require(amount > 0 || now >= timeClaim, 'It is not timeClaim to settle underlying');
+            // require(amount > 0 || now >= timeClaim, 'It is not timeClaim to settle underlying');
+            require(now >= timeClaim, 'It is not timeClaim to settle underlying');
             if(now >= timeClaim) {
                 settledUnderlyingOf[msg.sender] = settledUnderlyingOf[msg.sender].add(volume);
                 totalSettledUnderlying = totalSettledUnderlying.add(volume);
@@ -949,6 +977,7 @@ contract PublicSale is  Governable{
     }
     
     function withdraw(address payable to, uint amount, uint volume) external governance {
+        require(to != address(0), "to zero address");
         require(completed, "uncompleted");
         (uint amt, uint vol) = withdrawable();
         amount = Math.min(amount, amt);
@@ -966,11 +995,15 @@ contract PublicSale is  Governable{
     ///  sent tokens to this contract.
     /// @param _token The address of the token contract that you want to recover
     function rescueTokens(address _token, address _dst) public governance {
+        require(_dst != address(0), "_dst zero address");
+        require(_token != address(0), "_token zero address");
         uint balance = IERC20(_token).balanceOf(address(this));
         IERC20(_token).safeTransfer(_dst, balance);
     }
 
     function withdrawCurrencyToken()  external governance{
+        require(now >= timeClaim, "It is not timeClaim yet");
+        require(totalPurchasedCurrency >= minUsdtTotalOffered);
         uint balance = IERC20(currency).balanceOf(address(this));
         uint feeBalance =   balance.mul(feeRatio).div(1e18);
         uint recipientBalance =  balance.sub(feeBalance);
@@ -982,6 +1015,7 @@ contract PublicSale is  Governable{
     event WithdrawCurrency(address indexed addr, uint balance,uint recipientBalance);
     
     function withdrawToken(address _dst) external governance {
+        require(_dst != address(0), "_dst zero address");
         rescueTokens(address(underlying), _dst);
     }
 
@@ -990,6 +1024,7 @@ contract PublicSale is  Governable{
     }
     
     function withdrawEth(address payable _dst) external governance {
+        require(_dst != address(0), "_dst zero address");
         _dst.transfer(address(this).balance);
     }
     
