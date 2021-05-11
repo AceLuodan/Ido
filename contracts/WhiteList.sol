@@ -798,7 +798,7 @@ contract WhiteList is  Governable{
 
     //  (price_  feeRatio_ )  mul 10**18  minUsdtTotalOffered_  mul 10**6
 	constructor(address governor_,address currency_, address token_, uint price_, address payable recipient_, address payable feeOwner_,uint feeRatio_,uint timeOffer_, uint timeClaim_,uint minUsdtTotalOffered_,uint minUsdtPersonOffered_) public  {
-	    require(timeClaim_ >= timeOffer_, 'timeClaim_ should >= timeOffer_');
+	    require(timeClaim_ > timeOffer_, 'timeClaim_ should >= timeOffer_');
         require(price_ > 0,"price should gt 0");
 
         require(governor_ != address(0), "governor_ zero address");
@@ -846,14 +846,14 @@ contract WhiteList is  Governable{
 
     event SetTimeOffer(address indexed acct, uint amount);
     function setTimeOffer(uint timeOffer_) public governance {
-        require(timeClaim >= timeOffer_, 'timeClaim_ should >= timeOffer_');
+        require(timeClaim > timeOffer_, 'timeClaim_ should >= timeOffer_');
         timeOffer = timeOffer_;
         emit SetTimeOffer(msg.sender, timeOffer_);
     }
 
     event SetTimeClaim(address indexed acct, uint amount);
     function setTimeClaim(uint timeClaim_) public governance {
-        require(timeClaim_ >= timeOffer, 'timeClaim_ should >= timeOffer_');
+        require(timeClaim_ > timeOffer, 'timeClaim_ should >= timeOffer_');
         timeClaim = timeClaim_;
         emit SetTimeClaim(msg.sender, timeClaim_);
     }

@@ -806,7 +806,7 @@ contract PublicSale is  Governable{
         price       = price_;
         timeOffer        = timeOffer_;
         timeClaim  = timeClaim_;
-        require(timeClaim_ >= timeOffer_, 'timeClaim_ should >= timeOffer_');
+        require(timeClaim_ > timeOffer_, 'timeClaim_ should >= timeOffer_');
 
         recipient = recipient_;
         feeRatio = feeRatio_;
@@ -855,14 +855,14 @@ contract PublicSale is  Governable{
 
     event SetTimeOffer(address indexed acct, uint amount);
     function setTimeOffer(uint timeOffer_) public governance {
-        require(timeClaim >= timeOffer_, 'timeClaim_ should >= timeOffer_');
+        require(timeClaim > timeOffer_, 'timeClaim_ should >= timeOffer_');
         timeOffer = timeOffer_;
         emit SetTimeOffer(msg.sender, timeOffer_);
     }
 
     event SetTimeClaim(address indexed acct, uint amount);
     function setTimeClaim(uint timeClaim_) public governance {
-        require(timeClaim_ >= timeOffer, 'timeClaim_ should >= timeOffer_');
+        require(timeClaim_ > timeOffer, 'timeClaim_ should >= timeOffer_');
         timeClaim = timeClaim_;
         emit SetTimeClaim(msg.sender, timeClaim_);
     }
