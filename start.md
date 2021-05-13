@@ -7,3 +7,14 @@ npx hardhat run --network rinkeby  deploy/deployWhiteList.js
 
 npx hardhat run --network rinkeby  deploy/deployPublicSale.js
 
+
+npx hardhat run --network okextest  deploy/deployPublicSale_okex.js
+
+
+npx hardhat run --network okextest  deploy/deployWhiteList_okex.js
+
+
+
+ if(totalUnderlying.mul(price) < totalCurrency.mul(1e18))
+
+ 合约内U价值 > Token 价值（0.1U * token数量）
