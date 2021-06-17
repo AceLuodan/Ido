@@ -42,11 +42,11 @@ uint price_      (USDT:T) * 1e18  * 10**curDec / 10 ** tokenDec
  
 price_ 为整数  0.1*10**18(10000000000000000000)  1USDT = 10 T
 
-minUsdtTotalOffered_ 10 USDT  10*10**6 最低软顶，低于即失败 10000000
+minUsdtTotalOffered_ 10 USDT  10*10**USDT decimals 最低软顶，低于即失败 10000000
 
 TOKEN(T) :  USDT: = 1：price_
 
-minUsdtPersonOffered_ 1USDT（1*10**6 ）  个人最低USDT额度
+minUsdtPersonOffered_ 1USDT（1*10**USDT decimals ）  个人最低USDT额度
 
 1.合约初始化
 
