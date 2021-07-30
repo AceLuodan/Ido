@@ -14,6 +14,15 @@ npx hardhat run --network okextest  deploy/deployPublicSale_okex.js
 npx hardhat run --network okextest  deploy/deployWhiteList_okex.js
 
 
+omcMain
+
+npx hardhat run --network okexmain  deploy/deployPublicSale_okexmain.js
+
+
+npx hardhat run --network okexmain  deploy/deployWhiteList_okexmain.js
+
+
+
 
  if(totalUnderlying.mul(price) < totalCurrency.mul(1e18))
 

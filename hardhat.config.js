@@ -45,6 +45,12 @@ module.exports = {
       live: true,
       saveDeployments: true,
     },
+    okexmain: {
+      url: `https://exchainrpc.okex.org`,
+      accounts: [process.env.PRIVATEKEY],
+      live: true,
+      saveDeployments: true,
+    },
   },
   etherscan: {
     apiKey: process.env.ETHERSCAN_APIKEY,
