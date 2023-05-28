@@ -13,15 +13,22 @@ async function main() {
 
   const PublicSale = await ethers.getContractFactory("PublicSale");
 // price * 1e18  * 10**curDec / 10 ** tokenDec
-  let  price = ethers.BigNumber.from("100000000000000000").mul(ethers.BigNumber.from("10000000000") ).div(ethers.BigNumber.from("1000000000000000000") );
-  console.log("price : ",price.toString());
-
+  const e = ethers.utils.parseEther('1');
+  console.log(e);
+ 
+  console.log(ethers.BigNumber.from("100000000000000000"));
+  const curDec = ethers.utils.parseUnits("1", 6);
+  const tokenDec = ethers.utils.parseUnits("1", 18);
+  let  price = ethers.BigNumber.from("100000000000000000").mul(curDec ).div(tokenDec);
+  console.log("price : ", price.toString());
+  console.log("curDec : ",curDec.toString());
+  console.log("tokenDec : ",tokenDec.toString());
   //(address governor_, address currency_, address underlying_, uint price_, uint timeOffer_, uint timeClaim_, address payable recipient_, address payable feeOwner_,uint feeRatio_,uint minUsdtTotalOffered_,uint maxUsdtTotalOffered_,uint minUsdtPersonOffered_,uint maxUsdtPersonOffered_) 
-  const publicSale = await PublicSale.deploy("0x66d59cA5721Ce058B706581d983bbD7c5bA366f1","0xe579156f9decc4134b5e3a30a24ac46bb8b01281",
-  "0xc5e96b3bcb700584ce108f30f118d406f3938403",price,"1618827957","1618827657000", "0x66d59cA5721Ce058B706581d983bbD7c5bA366f1","0x66d59cA5721Ce058B706581d983bbD7c5bA366f1",ethers.BigNumber.from("30000000000000000"),10000000,ethers.BigNumber.from("50000000000000000000000000") ,100000,1000000000
-  );
+  // const publicSale = await PublicSale.deploy("0x66d59cA5721Ce058B706581d983bbD7c5bA366f1","0xe579156f9decc4134b5e3a30a24ac46bb8b01281",
+  // "0xc5e96b3bcb700584ce108f30f118d406f3938403",price,"1618827957","1618827657000", "0x66d59cA5721Ce058B706581d983bbD7c5bA366f1","0x66d59cA5721Ce058B706581d983bbD7c5bA366f1",ethers.BigNumber.from("30000000000000000"),10000000,ethers.BigNumber.from("50000000000000000000000000") ,100000,1000000000
+  // );
 
-  console.log("PublicSale Contract Address:", publicSale.address);
+  // console.log("PublicSale Contract Address:", publicSale.address);
 }
 
 main()

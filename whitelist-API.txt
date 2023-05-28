@@ -68,7 +68,7 @@ user 函数(公开)
 
 写函数
 
-1.function offer(uint amount_) 
+1.function offer(uint amount_)  当token为CFX时，amount为0
 用户IDO投入amount_ USDT
 
 2.function claim() 

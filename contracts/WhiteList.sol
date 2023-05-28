@@ -1,13 +1,10 @@
 /**
  *Submitted for verification at hecoinfo.com on 2021-02-27
-*/
+ */
 
 // SPDX-License-Identifier: MIT
 
 pragma solidity ^0.6.2;
-
-
-
 
 /*
  * @dev Provides information about the current execution context, including the
@@ -20,7 +17,6 @@ pragma solidity ^0.6.2;
  * This contract is only required for intermediate, library-like contracts.
  */
 contract Context {
-
     function _msgSender() internal view virtual returns (address payable) {
         return msg.sender;
     }
@@ -31,6 +27,41 @@ contract Context {
     }
 
     // uint256[50] private __gap;
+}
+
+contract ReentrancyGuard {
+    bool private _notEntered;
+
+    constructor() internal {
+        // Storing an initial non-zero value makes deployment a bit more
+        // expensive, but in exchange the refund on every call to nonReentrant
+        // will be lower in amount. Since refunds are capped to a percetange of
+        // the total transaction's gas, it is best to keep them low in cases
+        // like this one, to increase the likelihood of the full refund coming
+        // into effect.
+        _notEntered = true;
+    }
+
+    /**
+     * @dev Prevents a contract from calling itself, directly or indirectly.
+     * Calling a `nonReentrant` function from another `nonReentrant`
+     * function is not supported. It is possible to prevent this from happening
+     * by making the `nonReentrant` function external, and make it call a
+     * `private` function that does the actual work.
+     */
+    modifier nonReentrant() {
+        // On the first call to nonReentrant, _notEntered will be true
+        require(_notEntered, "ReentrancyGuard: reentrant call");
+
+        // Any calls to nonReentrant after this point will fail
+        _notEntered = false;
+
+        _;
+
+        // By storing the original value once again, a refund is triggered (see
+        // https://eips.ethereum.org/EIPS/eip-2200)
+        _notEntered = true;
+    }
 }
 
 /**
@@ -57,7 +88,7 @@ library Math {
      */
     function average(uint256 a, uint256 b) internal pure returns (uint256) {
         // (a + b) / 2 can overflow, so we distribute
-        return (a / 2) + (b / 2) + ((a % 2 + b % 2) / 2);
+        return (a / 2) + (b / 2) + (((a % 2) + (b % 2)) / 2);
     }
 }
 
@@ -113,7 +144,11 @@ library SafeMath {
      * Requirements:
      * - Subtraction cannot overflow.
      */
-    function sub(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {
+    function sub(
+        uint256 a,
+        uint256 b,
+        string memory errorMessage
+    ) internal pure returns (uint256) {
         require(b <= a, errorMessage);
         uint256 c = a - b;
 
@@ -173,7 +208,11 @@ library SafeMath {
      * Requirements:
      * - The divisor cannot be zero.
      */
-    function div(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {
+    function div(
+        uint256 a,
+        uint256 b,
+        string memory errorMessage
+    ) internal pure returns (uint256) {
         // Solidity only automatically asserts when dividing by 0
         require(b > 0, errorMessage);
         uint256 c = a / b;
@@ -208,7 +247,11 @@ library SafeMath {
      * Requirements:
      * - The divisor cannot be zero.
      */
-    function mod(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {
+    function mod(
+        uint256 a,
+        uint256 b,
+        string memory errorMessage
+    ) internal pure returns (uint256) {
         require(b != 0, errorMessage);
         return a % b;
     }
@@ -242,7 +285,9 @@ library Address {
         bytes32 codehash;
         bytes32 accountHash = 0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470;
         // solhint-disable-next-line no-inline-assembly
-        assembly { codehash := extcodehash(account) }
+        assembly {
+            codehash := extcodehash(account)
+        }
         return (codehash != accountHash && codehash != 0x0);
     }
 
@@ -263,11 +308,17 @@ library Address {
      * https://solidity.readthedocs.io/en/v0.5.11/security-considerations.html#use-the-checks-effects-interactions-pattern[checks-effects-interactions pattern].
      */
     function sendValue(address payable recipient, uint256 amount) internal {
-        require(address(this).balance >= amount, "Address: insufficient balance");
+        require(
+            address(this).balance >= amount,
+            "Address: insufficient balance"
+        );
 
         // solhint-disable-next-line avoid-low-level-calls, avoid-call-value
-        (bool success, ) = recipient.call{ value: amount }("");
-        require(success, "Address: unable to send value, recipient may have reverted");
+        (bool success, ) = recipient.call{value: amount}("");
+        require(
+            success,
+            "Address: unable to send value, recipient may have reverted"
+        );
     }
 }
 
@@ -279,8 +330,7 @@ interface IERC20 {
      * @dev Returns the amount of tokens in existence.
      */
     function totalSupply() external view returns (uint256);
-    
-    
+
     function decimals() external view returns (uint);
 
     /**
@@ -295,7 +345,10 @@ interface IERC20 {
      *
      * Emits a {Transfer} event.
      */
-    function transfer(address recipient, uint256 amount) external returns (bool);
+    function transfer(
+        address recipient,
+        uint256 amount
+    ) external returns (bool);
 
     /**
      * @dev Returns the remaining number of tokens that `spender` will be
@@ -304,7 +357,10 @@ interface IERC20 {
      *
      * This value changes when {approve} or {transferFrom} are called.
      */
-    function allowance(address owner, address spender) external view returns (uint256);
+    function allowance(
+        address owner,
+        address spender
+    ) external view returns (uint256);
 
     /**
      * @dev Sets `amount` as the allowance of `spender` over the caller's tokens.
@@ -331,7 +387,11 @@ interface IERC20 {
      *
      * Emits a {Transfer} event.
      */
-    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
+    function transferFrom(
+        address sender,
+        address recipient,
+        uint256 amount
+    ) external returns (bool);
 
     /**
      * @dev Emitted when `value` tokens are moved from one account (`from`) to
@@ -345,7 +405,11 @@ interface IERC20 {
      * @dev Emitted when the allowance of a `spender` for an `owner` is set by
      * a call to {approve}. `value` is the new allowance.
      */
-    event Approval(address indexed owner, address indexed spender, uint256 value);
+    event Approval(
+        address indexed owner,
+        address indexed spender,
+        uint256 value
+    );
 }
 
 /**
@@ -376,9 +440,9 @@ contract ERC20Safe is Context, IERC20 {
     using SafeMath for uint256;
     using Address for address;
 
-    mapping (address => uint256) private _balances;
+    mapping(address => uint256) private _balances;
 
-    mapping (address => mapping (address => uint256)) private _allowances;
+    mapping(address => mapping(address => uint256)) private _allowances;
 
     uint256 private _totalSupply;
 
@@ -396,7 +460,7 @@ contract ERC20Safe is Context, IERC20 {
      * construction.
      */
 
-    function __ERC20_init(string memory name, string memory symbol) internal  {
+    function __ERC20_init(string memory name, string memory symbol) internal {
         _name = name;
         _symbol = symbol;
         _decimals = 18;
@@ -456,7 +520,10 @@ contract ERC20Safe is Context, IERC20 {
      * - `recipient` cannot be the zero address.
      * - the caller must have a balance of at least `amount`.
      */
-    function transfer(address recipient, uint256 amount) public virtual override returns (bool) {
+    function transfer(
+        address recipient,
+        uint256 amount
+    ) public virtual override returns (bool) {
         _transfer(_msgSender(), recipient, amount);
         return true;
     }
@@ -464,7 +531,10 @@ contract ERC20Safe is Context, IERC20 {
     /**
      * @dev See {IERC20-allowance}.
      */
-    function allowance(address owner, address spender) public view virtual override returns (uint256) {
+    function allowance(
+        address owner,
+        address spender
+    ) public view virtual override returns (uint256) {
         return _allowances[owner][spender];
     }
 
@@ -475,7 +545,10 @@ contract ERC20Safe is Context, IERC20 {
      *
      * - `spender` cannot be the zero address.
      */
-    function approve(address spender, uint256 amount) public virtual override returns (bool) {
+    function approve(
+        address spender,
+        uint256 amount
+    ) public virtual override returns (bool) {
         _approve(_msgSender(), spender, amount);
         return true;
     }
@@ -492,9 +565,20 @@ contract ERC20Safe is Context, IERC20 {
      * - the caller must have allowance for ``sender``'s tokens of at least
      * `amount`.
      */
-    function transferFrom(address sender, address recipient, uint256 amount) public virtual override returns (bool) {
+    function transferFrom(
+        address sender,
+        address recipient,
+        uint256 amount
+    ) public virtual override returns (bool) {
         _transfer(sender, recipient, amount);
-        _approve(sender, _msgSender(), _allowances[sender][_msgSender()].sub(amount, "ERC20: transfer amount exceeds allowance"));
+        _approve(
+            sender,
+            _msgSender(),
+            _allowances[sender][_msgSender()].sub(
+                amount,
+                "ERC20: transfer amount exceeds allowance"
+            )
+        );
         return true;
     }
 
@@ -510,8 +594,15 @@ contract ERC20Safe is Context, IERC20 {
      *
      * - `spender` cannot be the zero address.
      */
-    function increaseAllowance(address spender, uint256 addedValue) public virtual returns (bool) {
-        _approve(_msgSender(), spender, _allowances[_msgSender()][spender].add(addedValue));
+    function increaseAllowance(
+        address spender,
+        uint256 addedValue
+    ) public virtual returns (bool) {
+        _approve(
+            _msgSender(),
+            spender,
+            _allowances[_msgSender()][spender].add(addedValue)
+        );
         return true;
     }
 
@@ -529,8 +620,18 @@ contract ERC20Safe is Context, IERC20 {
      * - `spender` must have allowance for the caller of at least
      * `subtractedValue`.
      */
-    function decreaseAllowance(address spender, uint256 subtractedValue) public virtual returns (bool) {
-        _approve(_msgSender(), spender, _allowances[_msgSender()][spender].sub(subtractedValue, "ERC20: decreased allowance below zero"));
+    function decreaseAllowance(
+        address spender,
+        uint256 subtractedValue
+    ) public virtual returns (bool) {
+        _approve(
+            _msgSender(),
+            spender,
+            _allowances[_msgSender()][spender].sub(
+                subtractedValue,
+                "ERC20: decreased allowance below zero"
+            )
+        );
         return true;
     }
 
@@ -548,13 +649,20 @@ contract ERC20Safe is Context, IERC20 {
      * - `recipient` cannot be the zero address.
      * - `sender` must have a balance of at least `amount`.
      */
-    function _transfer(address sender, address recipient, uint256 amount) internal virtual {
+    function _transfer(
+        address sender,
+        address recipient,
+        uint256 amount
+    ) internal virtual {
         require(sender != address(0), "ERC20: transfer from the zero address");
         require(recipient != address(0), "ERC20: transfer to the zero address");
 
         _beforeTokenTransfer(sender, recipient, amount);
 
-        _balances[sender] = _balances[sender].sub(amount, "ERC20: transfer amount exceeds balance");
+        _balances[sender] = _balances[sender].sub(
+            amount,
+            "ERC20: transfer amount exceeds balance"
+        );
         _balances[recipient] = _balances[recipient].add(amount);
         emit Transfer(sender, recipient, amount);
     }
@@ -594,7 +702,10 @@ contract ERC20Safe is Context, IERC20 {
 
         _beforeTokenTransfer(account, address(0), amount);
 
-        _balances[account] = _balances[account].sub(amount, "ERC20: burn amount exceeds balance");
+        _balances[account] = _balances[account].sub(
+            amount,
+            "ERC20: burn amount exceeds balance"
+        );
         _totalSupply = _totalSupply.sub(amount);
         emit Transfer(account, address(0), amount);
     }
@@ -612,7 +723,11 @@ contract ERC20Safe is Context, IERC20 {
      * - `owner` cannot be the zero address.
      * - `spender` cannot be the zero address.
      */
-    function _approve(address owner, address spender, uint256 amount) internal virtual {
+    function _approve(
+        address owner,
+        address spender,
+        uint256 amount
+    ) internal virtual {
         require(owner != address(0), "ERC20: approve from the zero address");
         require(spender != address(0), "ERC20: approve to the zero address");
 
@@ -645,11 +760,14 @@ contract ERC20Safe is Context, IERC20 {
      *
      * To learn more about hooks, head to xref:ROOT:extending-contracts.adoc#using-hooks[Using Hooks].
      */
-    function _beforeTokenTransfer(address from, address to, uint256 amount) internal virtual { }
+    function _beforeTokenTransfer(
+        address from,
+        address to,
+        uint256 amount
+    ) internal virtual {}
 
     // uint256[44] private __gap;
 }
-
 
 /**
  * @title SafeERC20
@@ -665,32 +783,78 @@ library SafeERC20 {
     using Address for address;
 
     function safeTransfer(IERC20 token, address to, uint256 value) internal {
-        _callOptionalReturn(token, abi.encodeWithSelector(token.transfer.selector, to, value));
+        _callOptionalReturn(
+            token,
+            abi.encodeWithSelector(token.transfer.selector, to, value)
+        );
     }
 
-    function safeTransferFrom(IERC20 token, address from, address to, uint256 value) internal {
-        _callOptionalReturn(token, abi.encodeWithSelector(token.transferFrom.selector, from, to, value));
+    function safeTransferFrom(
+        IERC20 token,
+        address from,
+        address to,
+        uint256 value
+    ) internal {
+        _callOptionalReturn(
+            token,
+            abi.encodeWithSelector(token.transferFrom.selector, from, to, value)
+        );
     }
 
-    function safeApprove(IERC20 token, address spender, uint256 value) internal {
+    function safeApprove(
+        IERC20 token,
+        address spender,
+        uint256 value
+    ) internal {
         // safeApprove should only be called when setting an initial allowance,
         // or when resetting it to zero. To increase and decrease it, use
         // 'safeIncreaseAllowance' and 'safeDecreaseAllowance'
         // solhint-disable-next-line max-line-length
-        require((value == 0) || (token.allowance(address(this), spender) == 0),
+        require(
+            (value == 0) || (token.allowance(address(this), spender) == 0),
             "SafeERC20: approve from non-zero to non-zero allowance"
         );
-        _callOptionalReturn(token, abi.encodeWithSelector(token.approve.selector, spender, value));
+        _callOptionalReturn(
+            token,
+            abi.encodeWithSelector(token.approve.selector, spender, value)
+        );
     }
 
-    function safeIncreaseAllowance(IERC20 token, address spender, uint256 value) internal {
-        uint256 newAllowance = token.allowance(address(this), spender).add(value);
-        _callOptionalReturn(token, abi.encodeWithSelector(token.approve.selector, spender, newAllowance));
+    function safeIncreaseAllowance(
+        IERC20 token,
+        address spender,
+        uint256 value
+    ) internal {
+        uint256 newAllowance = token.allowance(address(this), spender).add(
+            value
+        );
+        _callOptionalReturn(
+            token,
+            abi.encodeWithSelector(
+                token.approve.selector,
+                spender,
+                newAllowance
+            )
+        );
     }
 
-    function safeDecreaseAllowance(IERC20 token, address spender, uint256 value) internal {
-        uint256 newAllowance = token.allowance(address(this), spender).sub(value, "SafeERC20: decreased allowance below zero");
-        _callOptionalReturn(token, abi.encodeWithSelector(token.approve.selector, spender, newAllowance));
+    function safeDecreaseAllowance(
+        IERC20 token,
+        address spender,
+        uint256 value
+    ) internal {
+        uint256 newAllowance = token.allowance(address(this), spender).sub(
+            value,
+            "SafeERC20: decreased allowance below zero"
+        );
+        _callOptionalReturn(
+            token,
+            abi.encodeWithSelector(
+                token.approve.selector,
+                spender,
+                newAllowance
+            )
+        );
     }
 
     /**
@@ -714,18 +878,24 @@ library SafeERC20 {
         (bool success, bytes memory returndata) = address(token).call(data);
         require(success, "SafeERC20: low-level call failed");
 
-        if (returndata.length > 0) { // Return data is optional
+        if (returndata.length > 0) {
+            // Return data is optional
             // solhint-disable-next-line max-line-length
-            require(abi.decode(returndata, (bool)), "SafeERC20: ERC20 operation did not succeed");
+            require(
+                abi.decode(returndata, (bool)),
+                "SafeERC20: ERC20 operation did not succeed"
+            );
         }
     }
 }
 
-
 contract Governable {
     address public governor;
 
-    event GovernorshipTransferred(address indexed previousGovernor, address indexed newGovernor);
+    event GovernorshipTransferred(
+        address indexed previousGovernor,
+        address indexed newGovernor
+    );
 
     modifier governance() {
         require(msg.sender == governor);
@@ -762,74 +932,98 @@ contract Governable {
     }
 }
 
+contract WhiteList is Governable, ReentrancyGuard {
+    using SafeMath for uint;
+    using SafeERC20 for IERC20;
 
-contract WhiteList is  Governable{
-	using SafeMath for uint;
-	using SafeERC20 for IERC20;
-	
     uint public constant contractType = 1;
-	IERC20 public currency;
-	IERC20 public token;
-	uint public price;
+    IERC20 public currency;
+    IERC20 public token;
+    uint public price;
     uint public feeRatio;
-	address payable public recipient;
+    address payable public recipient;
     address payable public feeOwner;
-	uint public timeOffer;
-	uint public timeClaim;
-	
-	uint public totalUsdtQuota;
-	uint public totalOffered;
-	uint public totalClaimed;
+    uint public timeOffer;
+    uint public timeClaim;
+
+    uint public totalUsdtQuota;
+    uint public totalOffered;
+    uint public totalClaimed;
     uint public minUsdtTotalOffered;
     uint public totalUsdtTotalOffered;
 
     uint public minUsdtPersonOffered;
-    mapping (address => uint) public minUsdtPersonOf;
+    mapping(address => uint) public minUsdtPersonOf;
 
-	mapping (address => uint) public quotaUsdtOf;
-	mapping (address => uint) public offeredOf;
-    mapping (address => uint) public offeredUsdtOf;
-	mapping (address => uint) public claimedOf;
+    mapping(address => uint) public quotaUsdtOf;
+    mapping(address => uint) public offeredOf;
+    mapping(address => uint) public offeredUsdtOf;
+    mapping(address => uint) public claimedOf;
 
     event Offer(address indexed addr, uint amount, uint volume, uint total);
     event Claim(address indexed addr, uint volume, uint total);
-    event Revert(address indexed addr, uint volume,uint volumeUsdt, uint total);
-    event WithdrawCurrency(address indexed addr, uint balance,uint recipientBalance);
+    event Revert(
+        address indexed addr,
+        uint volume,
+        uint volumeUsdt,
+        uint total
+    );
+    event WithdrawCurrency(
+        address indexed addr,
+        uint balance,
+        uint recipientBalance
+    );
 
     //  (price_  feeRatio_ )  mul 10**18  minUsdtTotalOffered_  mul 10**6
-	constructor(address governor_,address currency_, address token_, uint price_, address payable recipient_, address payable feeOwner_,uint feeRatio_,uint timeOffer_, uint timeClaim_,uint minUsdtTotalOffered_,uint minUsdtPersonOffered_) public  {
-	    require(timeClaim_ > timeOffer_, 'timeClaim_ should >= timeOffer_');
-        require(price_ > 0,"price should gt 0");
+    constructor(
+        address governor_,
+        address currency_,
+        address token_,
+        uint price_,
+        address payable recipient_,
+        address payable feeOwner_,
+        uint feeRatio_,
+        uint timeOffer_,
+        uint timeClaim_,
+        uint minUsdtTotalOffered_,
+        uint minUsdtPersonOffered_
+    ) public {
+        require(timeClaim_ > timeOffer_, "timeClaim_ should >= timeOffer_");
+        require(price_ > 0, "price should gt 0");
 
         require(governor_ != address(0), "governor_ zero address");
-        require(currency_ != address(0), "currency_ zero address");
+        // require(currency_ != address(0), "currency_ zero address");
         require(token_ != address(0), "token_ zero address");
         require(feeOwner_ != address(0), "feeOwner_ zero address");
         require(recipient_ != address(0), "recipient_ zero address");
 
         _transferGovernorship(governor_);
         currency = IERC20(currency_);
-		token = IERC20(token_);
+        token = IERC20(token_);
 
-		price = price_;
-		recipient = recipient_;
-	    timeOffer = timeOffer_;
-	    timeClaim = timeClaim_;
+        price = price_;
+        recipient = recipient_;
+        timeOffer = timeOffer_;
+        timeClaim = timeClaim_;
         feeRatio = feeRatio_;
-		feeOwner = feeOwner_;
+        feeOwner = feeOwner_;
 
-        minUsdtTotalOffered =minUsdtTotalOffered_;
-        minUsdtPersonOffered =minUsdtPersonOffered_;
-	}
+        minUsdtTotalOffered = minUsdtTotalOffered_;
+        minUsdtPersonOffered = minUsdtPersonOffered_;
+    }
 
-        event SetMinUsdtTotalOffered(address indexed acct, uint amount);
-     function setMinUsdtTotalOffered(uint minUsdtTotalOffered_) public governance {
-         require(minUsdtTotalOffered_ > 0,"minUsdtTotalOffered_ should gt 0");
-         minUsdtTotalOffered =minUsdtTotalOffered_;
-         emit SetMinUsdtTotalOffered(msg.sender, minUsdtTotalOffered_);
+    event SetMinUsdtTotalOffered(address indexed acct, uint amount);
+
+    function setMinUsdtTotalOffered(
+        uint minUsdtTotalOffered_
+    ) public governance {
+        require(minUsdtTotalOffered_ > 0, "minUsdtTotalOffered_ should gt 0");
+        minUsdtTotalOffered = minUsdtTotalOffered_;
+        emit SetMinUsdtTotalOffered(msg.sender, minUsdtTotalOffered_);
     }
 
     event SetFeeOwner(address indexed acct, address add);
+
     function setFeeOwner(address payable feeOwner_) public governance {
         require(feeOwner_ != address(0), "feeOwner_ zero address");
         feeOwner = feeOwner_;
@@ -838,6 +1032,7 @@ contract WhiteList is  Governable{
     }
 
     event SetFeeRatio(address indexed acct, uint amount);
+
     function setFeeRatio(uint feeRatio_) public governance {
         feeRatio = feeRatio_;
 
@@ -845,15 +1040,17 @@ contract WhiteList is  Governable{
     }
 
     event SetTimeOffer(address indexed acct, uint amount);
+
     function setTimeOffer(uint timeOffer_) public governance {
-        require(timeClaim > timeOffer_, 'timeClaim_ should >= timeOffer_');
+        require(timeClaim > timeOffer_, "timeClaim_ should >= timeOffer_");
         timeOffer = timeOffer_;
         emit SetTimeOffer(msg.sender, timeOffer_);
     }
 
     event SetTimeClaim(address indexed acct, uint amount);
+
     function setTimeClaim(uint timeClaim_) public governance {
-        require(timeClaim_ > timeOffer, 'timeClaim_ should >= timeOffer_');
+        require(timeClaim_ > timeOffer, "timeClaim_ should >= timeOffer_");
         timeClaim = timeClaim_;
         emit SetTimeClaim(msg.sender, timeClaim_);
     }
@@ -863,125 +1060,175 @@ contract WhiteList is  Governable{
     // }
 
     event SetRecipient(address indexed acct, address add);
+
     function setRecipient(address payable recipient_) public governance {
         require(recipient_ != address(0), "recipient_ zero address");
         recipient = recipient_;
         emit SetRecipient(msg.sender, recipient_);
     }
-	
-    function setQuota(address addr, uint amount) public governance {
 
+    function setQuota(address addr, uint amount) public governance {
         // uint amount =amount_.mul(10**currency.decimals());
-        require(amount>= getMinUsdtPersonOf( addr),"Quota should gt min");
+        require(amount >= getMinUsdtPersonOf(addr), "Quota should gt min");
         totalUsdtQuota = totalUsdtQuota.add(amount).sub(quotaUsdtOf[addr]);
         quotaUsdtOf[addr] = amount;
         emit Quota(addr, amount, totalUsdtQuota);
     }
+
     event Quota(address indexed addr, uint amount, uint total);
-    
+
     function setQuotas(address[] calldata addrs, uint amount) external {
-        for(uint i=0; i<addrs.length; i++)
-            setQuota(addrs[i], amount);
-    }
-    
-    function setQuotas(address[] calldata addrs, uint[] calldata amounts) external {
-        require(addrs.length == amounts.length);
-        for(uint i=0; i<addrs.length; i++)
-            setQuota(addrs[i], amounts[i]);
+        for (uint i = 0; i < addrs.length; i++) setQuota(addrs[i], amount);
     }
 
-    function setMinUsdtPersonOffered(address addr, uint amount) public governance {
+    function setQuotas(
+        address[] calldata addrs,
+        uint[] calldata amounts
+    ) external {
+        require(addrs.length == amounts.length);
+        for (uint i = 0; i < addrs.length; i++) setQuota(addrs[i], amounts[i]);
+    }
+
+    function setMinUsdtPersonOffered(
+        address addr,
+        uint amount
+    ) public governance {
         minUsdtPersonOf[addr] = amount;
         emit MinUsdtPersonOffered(addr, amount);
     }
+
     event MinUsdtPersonOffered(address indexed addr, uint amount);
-    
-    function setMinUsdtPersonOffereds(address[] calldata addrs, uint amount) external {
-        for(uint i=0; i<addrs.length; i++)
+
+    function setMinUsdtPersonOffereds(
+        address[] calldata addrs,
+        uint amount
+    ) external {
+        for (uint i = 0; i < addrs.length; i++)
             setMinUsdtPersonOffered(addrs[i], amount);
     }
-    
-    function setMinUsdtPersonOffereds(address[] calldata addrs, uint[] calldata amounts) external {
+
+    function setMinUsdtPersonOffereds(
+        address[] calldata addrs,
+        uint[] calldata amounts
+    ) external {
         require(addrs.length == amounts.length);
-        for(uint i=0; i<addrs.length; i++)
+        for (uint i = 0; i < addrs.length; i++)
             setMinUsdtPersonOffered(addrs[i], amounts[i]);
     }
 
-    function getMinUsdtPersonOf(address addr) public view  returns (uint amount){
-      
-      uint min = minUsdtPersonOf[addr];
-      if(min>0){
-        return min;
-      }
-      
-      return minUsdtPersonOffered;
+    function getMinUsdtPersonOf(
+        address addr
+    ) public view returns (uint amount) {
+        uint min = minUsdtPersonOf[addr];
+        if (min > 0) {
+            return min;
+        }
 
+        return minUsdtPersonOffered;
     }
 
+    // usdt amount
+    function offer(uint amount) external payable nonReentrant {
+        // require(
+        //     address(currency) != address(0),
+        //     "should call offerEth() instead"
+        // );
+        require(tx.origin == msg.sender, "only account");
+        require(now >= timeOffer, "it's not time yet");
+        require(now < timeClaim, "expired");
+        require(offeredOf[msg.sender] == 0, "offered already");
 
-    
-    // usdt amount 
-	function offer(uint amount) external {
-		require(address(currency) != address(0), 'should call offerEth() instead');
-		require(now >= timeOffer, "it's not time yet");
+        if (address(currency) != address(0)) {
+            require(
+                currency.allowance(msg.sender, address(this)) >= amount,
+                "allowance not enough"
+            );
+            require(
+                currency.balanceOf(msg.sender) >= amount,
+                "balance not enough"
+            );
+        } else {
+            amount = msg.value;
+        }
 
-        require(amount > getMinUsdtPersonOf(msg.sender), "amount should gt MinUsdtPersonOf");
-        
-		require(now < timeClaim, "expired");
-		amount = Math.min(amount, quotaUsdtOf[msg.sender]);
-		require(amount > 0, 'no quota');
-		require(currency.allowance(msg.sender, address(this)) >= amount, 'allowance not enough');
-		require(currency.balanceOf(msg.sender) >= amount, 'balance not enough');
-		require(offeredOf[msg.sender] == 0, 'offered already');
-		
-		//currency.safeTransferFrom(msg.sender, recipient, amount);
+        require(
+            amount > getMinUsdtPersonOf(msg.sender),
+            "amount should gt MinUsdtPersonOf"
+        );
+
+        require(amount <= quotaUsdtOf[msg.sender], "should gt quota");
+        // amount = Math.min(amount, quotaUsdtOf[msg.sender]);
+        require(amount > 0, "no quota");
+
+        //currency.safeTransferFrom(msg.sender, recipient, amount);
         // currency.safeTransferFrom(msg.sender, address(this), amount);
         offeredUsdtOf[msg.sender] = amount;
-		// uint volume = amount.div(price).mul(10**token.decimals()).div(10**currency.decimals()).mul(1e18);
+        // uint volume = amount.div(price).mul(10**token.decimals()).div(10**currency.decimals()).mul(1e18);
         // price_ : (USDT:T) * 1e18  * 10**curDec / 10 ** tokenDec
         //uint volume = amount.div(price).mul(1e18);
         uint volume = amount.mul(1e18).div(price);
-		offeredOf[msg.sender] = volume;
+        offeredOf[msg.sender] = volume;
 
         totalUsdtTotalOffered = totalUsdtTotalOffered.add(amount);
-		totalOffered = totalOffered.add(volume);
-		require(totalOffered <= token.balanceOf(address(this)), 'Quota is full');
-        currency.safeTransferFrom(msg.sender, address(this), amount);
-		emit Offer(msg.sender, amount, volume, totalOffered);
-	}
-	
-	// token amount
-    function claim() public {
+        totalOffered = totalOffered.add(volume);
+        require(
+            totalOffered <= token.balanceOf(address(this)),
+            "Quota is full"
+        );
+        if (address(currency) != address(0)) {
+            currency.safeTransferFrom(msg.sender, address(this), amount);
+        }
+
+        emit Offer(msg.sender, amount, volume, totalOffered);
+    }
+
+    // token amount
+    function claim() public nonReentrant {
         require(now >= timeClaim, "it's not timeClaim yet");
-        require(claimedOf[msg.sender] == 0, 'claimed already'); 
-        require(offeredUsdtOf[msg.sender] > 0, 'offered Usdt should gt 0'); 
-		// if(token.balanceOf(address(this)).add(totalClaimed) > totalOffered)
-		// 	token.safeTransfer(recipient, token.balanceOf(address(this)).add(totalClaimed).sub(totalOffered));
-       
-        if(minUsdtTotalOffered <= totalUsdtTotalOffered){
-            require(token.balanceOf(address(this))>= totalOffered.sub(totalClaimed)," offered token number should not gt balanace!");
+        require(claimedOf[msg.sender] == 0, "claimed already");
+        require(offeredUsdtOf[msg.sender] > 0, "offered Usdt should gt 0");
+        // if(token.balanceOf(address(this)).add(totalClaimed) > totalOffered)
+        // 	token.safeTransfer(recipient, token.balanceOf(address(this)).add(totalClaimed).sub(totalOffered));
+
+        if (minUsdtTotalOffered <= totalUsdtTotalOffered) {
+            require(
+                token.balanceOf(address(this)) >=
+                    totalOffered.sub(totalClaimed),
+                " offered token number should not gt balanace!"
+            );
             uint volume = offeredOf[msg.sender];
             claimedOf[msg.sender] = volume;
             totalClaimed = totalClaimed.add(volume);
             token.safeTransfer(msg.sender, volume);
             emit Claim(msg.sender, volume, totalClaimed);
-        }else{
-            require(currency.balanceOf(address(this))>= totalUsdtTotalOffered," offered Usdt number should not gt balanace!");
-            uint volumeUsdt =  offeredUsdtOf[msg.sender];
-            uint volume =  offeredOf[msg.sender];
-           
+        } else {
+            if (address(currency) == address(0)) {
+                require(
+                    currency.balanceOf(address(this)) >= totalUsdtTotalOffered,
+                    " offered Usdt number should not gt balanace!"
+                );
+            } else {
+                require(
+                    address(this).balance >= totalUsdtTotalOffered,
+                    " offered Usdt number should not gt balanace!"
+                );
+            }
+
+            uint volumeUsdt = offeredUsdtOf[msg.sender];
+            uint volume = offeredOf[msg.sender];
+
             offeredUsdtOf[msg.sender] = 0;
-            offeredOf[msg.sender] =0 ;
-            totalOffered= totalOffered.sub(volume);
+            offeredOf[msg.sender] = 0;
+            totalOffered = totalOffered.sub(volume);
             totalUsdtTotalOffered = totalUsdtTotalOffered.sub(volumeUsdt);
-             //Revert USDT
-            currency.safeTransfer(msg.sender, volumeUsdt);
-            emit Revert(msg.sender,volume, volumeUsdt,totalOffered);
+            //Revert USDT/ETH
+            if (address(currency) == address(0))
+                msg.sender.transfer(volumeUsdt);
+            else currency.safeTransfer(msg.sender, volumeUsdt);
+            emit Revert(msg.sender, volume, volumeUsdt, totalOffered);
         }
-       
     }
 
-    
     /// @notice This method can be used by the owner to extract mistakenly
     ///  sent tokens to this contract.
     /// @param _token The address of the token contract that you want to recover
@@ -989,7 +1236,7 @@ contract WhiteList is  Governable{
         uint balance = IERC20(_token).balanceOf(address(this));
         IERC20(_token).safeTransfer(_dst, balance);
     }
-    
+
     function withdrawToken(address _dst) external governance {
         rescueTokens(address(token), _dst);
     }
@@ -998,26 +1245,44 @@ contract WhiteList is  Governable{
         rescueTokens(address(token), msg.sender);
     }
 
-
-    function withdrawCurrencyToken()  external governance{
+    function withdrawCurrencyToken() external governance {
         require(now >= timeClaim, "It is not timeClaim yet");
         require(totalUsdtTotalOffered >= minUsdtTotalOffered);
-        uint balance = currency.balanceOf(address(this));
-        uint feeBalance =   balance.mul(feeRatio).div(1e18);
-        uint recipientBalance =  balance.sub(feeBalance);
-        currency.safeTransfer(recipient, recipientBalance);
-        currency.safeTransfer(feeOwner, feeBalance);
-        emit WithdrawCurrency(recipient,balance, recipientBalance);
+
+        uint balance = 0;
+        uint feeBalance = 0;
+        uint recipientBalance = 0;
+        if (address(currency) == address(0)) {
+            balance = address(this).balance;
+            feeBalance = balance.mul(feeRatio).div(1e18);
+            recipientBalance = balance.sub(feeBalance);
+            (bool success, ) = recipient.call{value: recipientBalance}("");
+            if (!success) {
+                revert("recipient fail");
+            }
+            (success, ) = feeOwner.call{value: feeBalance}("");
+            if (!success) {
+                revert("fee fail");
+            }
+        } else {
+            balance = currency.balanceOf(address(this));
+            feeBalance = balance.mul(feeRatio).div(1e18);
+            recipientBalance = balance.sub(feeBalance);
+            currency.safeTransfer(recipient, recipientBalance);
+            currency.safeTransfer(feeOwner, feeBalance);
+        }
+
+        emit WithdrawCurrency(recipient, balance, recipientBalance);
     }
-    
-    function withdrawEth(address payable _dst) external governance {
-        _dst.transfer(address(this).balance);
-    }
-    
-    function withdrawEth() external governance {
-        msg.sender.transfer(address(this).balance);
-    }
-    
+
+    // function withdrawEth(address payable _dst) external governance {
+    //     _dst.transfer(address(this).balance);
+    // }
+
+    // function withdrawEth() external governance {
+    //     msg.sender.transfer(address(this).balance);
+    // }
+
     fallback() external {
         claim();
     }

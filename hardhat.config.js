@@ -45,6 +45,24 @@ module.exports = {
       live: true,
       saveDeployments: true,
     },
+    scroll: {
+      url: `https://alpha-rpc.scroll.io/l2`,
+      accounts: [process.env.PRIVATEKEY],
+      live: true,
+      saveDeployments: true,
+    },
+    cfxEspaceTest: {
+      url: `https://evmtestnet.confluxrpc.com`,
+      accounts: [process.env.PRIVATEKEY],
+      live: true,
+      saveDeployments: true,
+    },
+    cfxEspace: {
+      url: `https://conflux-espace-public.unifra.io`,
+      accounts: [process.env.PRIVATEKEY],
+      live: true,
+      saveDeployments: true,
+    },
     okexmain: {
       url: `https://exchainrpc.okex.org`,
       accounts: [process.env.PRIVATEKEY],

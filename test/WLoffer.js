@@ -12,12 +12,17 @@ async function main() {
   
     //console.log("Account balance:", (await deployer.getBalance()).toString());
   
-    const CatDAOContract = await ethers.getContractFactory("CatDAOContract");
+    const WhiteList = await ethers.getContractFactory("WhiteList");
 
-    const box = await CatDAOContract.attach("0x86C89632642F655e745984E7fFD4953ECE03352f");
+    const whiteList = await WhiteList.attach("0x48B65bE9B893B2372bF2d9d41f849CF8FDf2239D");
+  
+   const gasFund = _ = ethers.utils.parseUnits("0.001", 18);
+   console.log("Quotas:" + await whiteList.quotaUsdtOf(deployer.address));
+   const tx =await whiteList.offer(0, {
+      value: gasFund,
+    })
 
-
-    (await box.version()).toString()
+  console.log(tx);
 
   }
   
