@@ -67,9 +67,9 @@ minUsdtPersonOffered\_ 1USDT（1\*10\*\*USDT decimals ） 个人最低 USDT 额�
 
 4.用户 approve 额度 给 IDO 合约
 
-5.用户 offer IDO 合约
+5.用户 offer IDO 合约(支持 CFX，用户填入 CFX 数值，amount 为 0)
 
-5.用户 claim IDO 合约(支持 CFX，用户填入 CFX 数值，amount 为 0)
+5.用户 claim IDO 合约
 
 ---
 
